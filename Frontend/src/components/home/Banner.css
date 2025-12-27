@@ -1,0 +1,54 @@
+.home-banner {
+  width: 100%;
+  margin: 14px 0 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* IMAGE */
+.home-banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;     /* 🔥 FULL IMAGE ALWAYS */
+  border-radius: 16px;
+}
+
+/* 🖥️ DESKTOP – EXACT FIX */
+@media (min-width: 1024px) {
+  .home-banner {
+    height: 300px;         /* 🔥 same size as now */
+  }
+
+  .home-banner-image {
+    height: 100%;
+    width: auto;           /* 🔥 prevents side crop */
+    max-width: 100%;
+  }
+}
+
+/* 💻 TABLET */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .home-banner {
+    height: 260px;
+  }
+
+  .home-banner-image {
+    height: 100%;
+    width: auto;
+  }
+}
+
+/* 📱 MOBILE – KEEP AS IS (PERFECT) */
+@media (max-width: 767px) {
+  .home-banner {
+    height: auto;
+    margin: 10px 0 16px;
+  }
+
+  .home-banner-image {
+    width: 100%;
+    height: auto;
+  }
+}
