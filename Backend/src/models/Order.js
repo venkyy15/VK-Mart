@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
-/* ===============================
-   ORDER ITEM SCHEMA
-================================ */
+/*ORDER ITEM SCHEMA*/
 const orderItemSchema = new mongoose.Schema(
   {
     product: {
@@ -17,15 +15,14 @@ const orderItemSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true
+      required: true,
+      min: 0
     }
   },
   { _id: false }
 );
 
-/* ===============================
-   SHIPPING ADDRESS SCHEMA
-================================ */
+/*SHIPPING ADDRESS SCHEMA */
 const shippingAddressSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true },
@@ -40,9 +37,7 @@ const shippingAddressSchema = new mongoose.Schema(
   { _id: false }
 );
 
-/* ===============================
-   ORDER SCHEMA  ✅ FINAL
-================================ */
+/*ORDER SCHEMA*/
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -51,10 +46,13 @@ const orderSchema = new mongoose.Schema(
       required: true
     },
 
-    /* ✅ THIS IS WHAT FRONTEND READS */
     items: {
       type: [orderItemSchema],
-      required: true
+      required: true,
+      validate: [
+        (val) => Array.isArray(val) && val.length > 0,
+        "Order must have at least one item"
+      ]
     },
 
     shippingAddress: {
@@ -68,10 +66,10 @@ const orderSchema = new mongoose.Schema(
       required: true
     },
 
-    /* ✅ THIS IS WHAT FRONTEND READS */
     totalAmount: {
       type: Number,
-      required: true
+      required: true,
+      min: 0
     },
 
     isPaid: {
@@ -79,7 +77,9 @@ const orderSchema = new mongoose.Schema(
       default: false
     },
 
-    paidAt: Date,
+    paidAt: {
+      type: Date
+    },
 
     status: {
       type: String,
@@ -87,10 +87,7 @@ const orderSchema = new mongoose.Schema(
       default: "PLACED"
     }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
-const Order = mongoose.model("Order", orderSchema);
-export default Order;
+export default mongoose.model("Order", orderSchema);

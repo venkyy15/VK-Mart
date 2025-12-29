@@ -30,3 +30,14 @@ export const getProfile = async () => {
 export const updateProfileApi = async ({ name }) => {
   return axiosInstance.put("/auth/profile", { name });
 };
+import axios from "./axiosInstance";
+
+/* 🔐 CHANGE PASSWORD */
+export const changePasswordApi = (data) => {
+  return axios.put("/auth/change-password", data);
+};
+
+/* 📱 ACTIVE SESSIONS */
+export const getSessionsApi = () => {
+  return axios.get("/auth/sessions");
+};

@@ -10,6 +10,9 @@ export default function Orders() {
     dispatch(fetchOrdersAsync());
   }, [dispatch]);
 
+  /* ========================
+     STATES
+  ======================== */
   if (loading) {
     return <p style={{ padding: 20 }}>Loading orders...</p>;
   }
@@ -31,61 +34,129 @@ export default function Orders() {
     );
   }
 
+  /* ========================
+     UI
+  ======================== */
   return (
     <div className="orders-page" style={{ padding: 20 }}>
-      <h2>Your Orders</h2>
+      <h2 style={{ marginBottom: 20 }}>Your Orders</h2>
 
       {list.map((order) => {
-        // ✅ SAFE NORMALIZATION (NO ERROR EVER)
+        /* 🔐 SAFE NORMALIZATION */
         const orderItems = order.items || order.orderItems || [];
         const total =
           order.totalAmount !== undefined
             ? order.totalAmount
             : order.totalPrice;
 
+        const address = order.shippingAddress;
+
         return (
           <div
             key={order._id}
             className="order-card"
             style={{
-              border: "1px solid #ddd",
-              borderRadius: 8,
+              border: "1px solid #d6efe4",
+              borderRadius: 12,
               padding: 16,
-              marginBottom: 16,
-              background: "#fff"
+              marginBottom: 20,
+              background: "#ffffff"
             }}
           >
-            <p>
-              <strong>Order ID:</strong> {order._id}
-            </p>
+            {/* ===== ORDER HEADER ===== */}
+            <div style={{ marginBottom: 10 }}>
+              <p>
+                <strong>Order ID:</strong> {order._id}
+              </p>
+              <p>
+                <strong>Status:</strong> {order.status}
+              </p>
+              <p>
+                <strong>Payment:</strong> {order.paymentMethod}
+              </p>
+              <p>
+                <strong>Total:</strong> ₹{total}
+              </p>
+            </div>
 
-            <p>
-              <strong>Payment:</strong> {order.paymentMethod}
-            </p>
-
-            <p>
-              <strong>Total:</strong> ₹{total}
-            </p>
-
-            <p>
-              <strong>Status:</strong> {order.status || "PLACED"}
-            </p>
-
-            <div className="order-items" style={{ marginTop: 10 }}>
+            {/* ===== ITEMS ===== */}
+            <div style={{ marginTop: 14 }}>
               <strong>Items:</strong>
 
               {orderItems.length === 0 ? (
-                <p style={{ marginLeft: 10, color: "#777" }}>
+                <p style={{ marginTop: 6, color: "#777" }}>
                   No items found
                 </p>
               ) : (
                 orderItems.map((item, idx) => (
-                  <p key={idx} style={{ marginLeft: 10 }}>
-                    {item.product?.name || "Product"} × {item.qty}
-                  </p>
+                  <div
+                    key={idx}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      marginTop: 10,
+                      padding: 10,
+                      borderRadius: 8,
+                      border: "1px solid #e5e7eb",
+                      background: "#f9fffc"
+                    }}
+                  >
+                    {/* IMAGE */}
+                    <div
+                      style={{
+                        width: 70,
+                        height: 70,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <img
+                        src={item.product?.image || "/placeholder.png"}
+                        alt={item.product?.name}
+                        style={{
+                          maxWidth: "100%",
+                          maxHeight: "100%",
+                          objectFit: "contain"
+                        }}
+                      />
+                    </div>
+
+                    {/* DETAILS */}
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600 }}>
+                        {item.product?.name || "Product"}
+                      </p>
+                      <p style={{ fontSize: 14 }}>
+                        Qty: {item.qty}
+                      </p>
+                      <p style={{ fontSize: 14 }}>
+                        Price: ₹{item.price}
+                      </p>
+                    </div>
+                  </div>
                 ))
               )}
             </div>
+
+            {/* ===== ADDRESS ===== */}
+            {address && (
+              <div style={{ marginTop: 16 }}>
+                <strong>Delivery Address:</strong>
+                <p style={{ fontSize: 14, marginTop: 4 }}>
+                  {address.fullName}, {address.phone}
+                </p>
+                <p style={{ fontSize: 14 }}>
+                  {address.addressLine1}
+                  {address.addressLine2
+                    ? `, ${address.addressLine2}`
+                    : ""}
+                </p>
+                <p style={{ fontSize: 14 }}>
+                  {address.city}, {address.state} – {address.pincode}
+                </p>
+              </div>
+            )}
           </div>
         );
       })}

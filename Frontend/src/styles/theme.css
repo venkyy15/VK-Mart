@@ -979,6 +979,47 @@ body {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+/* =========================
+   ADDRESS CARD – RADIO FIX
+========================= */
+
+.address-card {
+  position: relative;
+  border: 2px solid #f5c26b;
+  border-radius: 14px;
+  padding: 16px 16px 16px 16px;
+  background: #ffffff;
+}
+
+/* RADIO – TOP RIGHT */
+.address-radio {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  transform: scale(1.2);
+  accent-color: #0f3d2e;
+  cursor: pointer;
+}
+
+/* CONTENT */
+.address-content h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.address-content p {
+  font-size: 14px;
+  margin: 2px 0;
+  color: #333;
+}
+
+/* ACTIVE STATE */
+.address-card.active {
+  border-color: #0f3d2e;
+  box-shadow: 0 0 0 2px rgba(15, 61, 46, 0.15);
+}
+
 /* ===============================
    GLOBAL THEME VARIABLES
 ================================ */

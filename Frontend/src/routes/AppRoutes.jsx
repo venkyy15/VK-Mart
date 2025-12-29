@@ -1,5 +1,3 @@
-// src/routes/AppRoutes.jsx
-
 import { Routes, Route } from "react-router-dom";
 
 import Home from "../pages/Home";
@@ -11,22 +9,25 @@ import Payment from "../pages/Payment";
 import OrderSuccess from "../pages/OrderSuccess";
 import Orders from "../pages/Orders";
 import Profile from "../pages/Profile";
-import Addresses from "../pages/Addresses"; // ✅ ADD THIS
+import Addresses from "../pages/Addresses";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+
+/* 🔐 NEW PAGE */
+import LoginSecurity from "../pages/LoginSecurity";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* PUBLIC ROUTES */}
+      {/* ================= PUBLIC ROUTES ================= */}
       <Route path="/" element={<Home />} />
       <Route path="/category/:name" element={<Category />} />
       <Route path="/product/:id" element={<Product />} />
       <Route path="/cart" element={<Cart />} />
 
-      {/* PROTECTED ROUTES */}
+      {/* ================= PROTECTED ROUTES ================= */}
       <Route
         path="/checkout"
         element={
@@ -81,7 +82,17 @@ export default function AppRoutes() {
         }
       />
 
-      {/* AUTH ROUTES */}
+      {/* 🔐 LOGIN & SECURITY */}
+      <Route
+        path="/login-security"
+        element={
+          <ProtectedRoute>
+            <LoginSecurity />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= AUTH ROUTES ================= */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>

@@ -859,3 +859,86 @@ html, body, #root {
     top: 90px;
   }
 }
+/* =========================
+   CHANGE PASSWORD – DESIGN
+========================= */
+
+.change-password-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.change-password-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f3d2e;
+  margin-bottom: 6px;
+}
+
+.change-password-card .sub-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 18px;
+}
+
+/* INPUT GRID */
+.password-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+/* full width input */
+.password-grid .full {
+  grid-column: span 2;
+}
+
+/* INPUT DESIGN */
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #0f3d2e;
+  box-shadow: 0 0 0 2px rgba(15, 61, 46, 0.15);
+}
+
+/* BUTTON */
+.update-password-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #f5c76a, #f2b84b);
+  border: none;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.update-password-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245, 199, 106, 0.45);
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .password-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .password-grid .full {
+    grid-column: span 1;
+  }
+}
+
