@@ -1,6 +1,4 @@
-/* ================================
-   GLOBAL RESETS
-================================ */
+/*GLOBAL RESETS*/
 * {
   box-sizing: border-box;
 }
@@ -297,9 +295,7 @@ html, body, #root {
   }
 }
 
-/* ================================
-   SMALL MOBILE
-================================ */
+/*SMALL MOBILE*/
 @media (max-width: 480px) {
   .footer-links {
     grid-template-columns: 1fr;
@@ -316,9 +312,7 @@ html, body, #root {
   }
 }
 
-/* ================================
-   FOOTER COPYRIGHT SIZE FIX
-================================ */
+/*FOOTER COPYRIGHT SIZE FIX*/
 @media (max-width: 768px) {
   .footer-bottom {
     font-size: 12px;
@@ -387,7 +381,7 @@ html, body, #root {
   margin-bottom: 26px;
 }
 
-/* ===== BUTTONS ===== */
+/* BUTTONS */
 .order-success-actions {
   display: flex;
   gap: 12px;
@@ -520,9 +514,7 @@ html, body, #root {
     width: 100%;
   }
 }
-/* =========================
-   CART ITEM LAYOUT
-========================= */
+/*CART ITEM LAYOUT*/
 .cart-item {
   display: flex;
   gap: 20px;
@@ -533,9 +525,7 @@ html, body, #root {
   align-items: center;
 }
 
-/* =========================
-   IMAGE CONTAINER
-========================= */
+/*IMAGE CONTAINER*/
 .cart-item-image {
   width: 140px;
   height: 140px;
@@ -552,9 +542,7 @@ html, body, #root {
   object-fit: contain;   /* 🔥 no crop, full image */
 }
 
-/* =========================
-   INFO SECTION
-========================= */
+/*INFO SECTION*/
 .cart-item-info {
   flex: 1;
 }
@@ -571,9 +559,7 @@ html, body, #root {
   margin-bottom: 10px;
 }
 
-/* =========================
-   ACTIONS
-========================= */
+/*ACTIONS*/
 .cart-actions {
   display: flex;
   gap: 12px;
@@ -594,9 +580,7 @@ html, body, #root {
   font-weight: 600;
 }
 
-/* =========================
-   📱 MOBILE FIX
-========================= */
+/*📱 MOBILE FIX*/
 @media (max-width: 768px) {
   .cart-item {
     flex-direction: column;
@@ -613,9 +597,7 @@ html, body, #root {
     height: 100%;
   }
 }
-/* =========================
-   PRODUCT DETAILS PAGE
-========================= */
+/* PRODUCT DETAILS PAGE*/
 
 .product-details-page {
   padding: 24px;
@@ -679,9 +661,7 @@ html, body, #root {
     max-height: 300px;
   }
 }
-/* =========================
-   PRODUCT CARD ALIGNMENT FIX
-========================= */
+/*PRODUCT CARD ALIGNMENT FIX*/
 
 .product-card {
   display: flex;
@@ -709,7 +689,6 @@ html, body, #root {
   -webkit-box-orient: vertical;
   margin-bottom: 8px;
 }
-
 /* PRICE */
 .product-price {
   margin-bottom: 8px;
@@ -724,9 +703,7 @@ html, body, #root {
 .add-to-cart-btn {
   margin-bottom: 8px;
 }
-/* =========================
-   PAYMENT PAGE – STYLE
-========================= */
+/*PAYMENT PAGE – STYLE*/
 
 .payment-page {
   background: #f2fbf7;
@@ -840,9 +817,7 @@ html, body, #root {
   box-shadow: 0 0 0 2px rgba(15, 61, 46, 0.15);
 }
 
-/* =========================
-   DESKTOP LAYOUT
-========================= */
+/*DESKTOP LAYOUT*/
 @media (min-width: 768px) {
   .payment-container {
     flex-direction: row;
@@ -859,9 +834,7 @@ html, body, #root {
     top: 90px;
   }
 }
-/* =========================
-   CHANGE PASSWORD – DESIGN
-========================= */
+/*CHANGE PASSWORD – DESIGN*/
 
 .change-password-card {
   background: #ffffff;
