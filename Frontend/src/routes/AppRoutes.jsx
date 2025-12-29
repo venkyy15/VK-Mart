@@ -16,6 +16,9 @@ import Signup from "../pages/Signup";
 /* 🔐 NEW PAGE */
 import LoginSecurity from "../pages/LoginSecurity";
 
+/* 🔥 ORDER DETAILS PAGE */
+import OrderDetails from "../pages/OrderDetails";
+
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 export default function AppRoutes() {
@@ -64,11 +67,22 @@ export default function AppRoutes() {
         }
       />
 
+      {/* 🔥 ORDERS LIST */}
       <Route
         path="/orders"
         element={
           <ProtectedRoute>
             <Orders />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* 🔥 ORDER DETAILS (PARAM ROUTE) */}
+      <Route
+        path="/orders/:id"
+        element={
+          <ProtectedRoute>
+            <OrderDetails />
           </ProtectedRoute>
         }
       />

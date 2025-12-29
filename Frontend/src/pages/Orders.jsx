@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom"; // 🔥 ADD
 import { fetchOrdersAsync } from "../features/order/orderSlice";
 
 export default function Orders() {
@@ -77,6 +78,20 @@ export default function Orders() {
               <p>
                 <strong>Total:</strong> ₹{total}
               </p>
+
+              {/* 🔥 PARAM LINK (THIS IS THE KEY FIX) */}
+              <Link
+                to={`/orders/${order._id}`}
+                style={{
+                  display: "inline-block",
+                  marginTop: 8,
+                  color: "#0f766e",
+                  fontWeight: 600,
+                  textDecoration: "none"
+                }}
+              >
+                View order details →
+              </Link>
             </div>
 
             {/* ===== ITEMS ===== */}

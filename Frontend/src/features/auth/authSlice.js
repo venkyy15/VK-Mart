@@ -10,7 +10,7 @@ import {
 /* ================= RESTORE USER ================= */
 const userFromStorage = (() => {
   try {
-    return JSON.parse(localStorage.getItem("user")); // ✅ FIXED KEY
+    return JSON.parse(localStorage.getItem("user")); // ✅ single source of truth
   } catch {
     return null;
   }
@@ -23,6 +23,7 @@ export const login = createAsyncThunk(
     try {
       const res = await loginUser(formData);
 
+      // ✅ backend returns inside data
       const userData = res.data.data;
 
       const storedUser = {
@@ -32,7 +33,7 @@ export const login = createAsyncThunk(
         token: userData.token
       };
 
-      // ✅ STORE TOKEN WHERE cartApi EXPECTS IT
+      // ✅ persist for refresh + all pages
       localStorage.setItem(
         "user",
         JSON.stringify(storedUser)
@@ -80,7 +81,7 @@ export const updateProfile = createAsyncThunk(
         token: userData.token
       };
 
-      // ✅ UPDATE SAME KEY
+      // ✅ keep same storage key (VERY IMPORTANT)
       localStorage.setItem(
         "user",
         JSON.stringify(updatedUser)
@@ -100,7 +101,7 @@ export const updateProfile = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: userFromStorage,
+    user: userFromStorage,   // ✅ restore on refresh
     loading: false,
     error: null,
     signupSuccess: false
@@ -108,7 +109,11 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem("user"); // ✅ FIXED
+      state.loading = false;
+      state.error = null;
+
+      // ✅ clear persisted auth
+      localStorage.removeItem("user");
     },
     clearAuthError: (state) => {
       state.error = null;
@@ -116,6 +121,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      /* ---------- LOGIN ---------- */
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -129,12 +135,32 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      /* ---------- SIGNUP ---------- */
+      .addCase(signup.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(signup.fulfilled, (state) => {
+        state.loading = false;
         state.signupSuccess = true;
       })
+      .addCase(signup.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
+      /* ---------- UPDATE PROFILE ---------- */
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
         state.user = action.payload;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   }
 });

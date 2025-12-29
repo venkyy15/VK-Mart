@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Link } from "react-router-dom";
 
@@ -30,10 +30,36 @@ export default function Login() {
       })
     );
 
+    /* ✅ LOGIN SUCCESS */
     if (res.meta.requestStatus === "fulfilled") {
+      const loggedUser = res.payload?.user;
+      const token = res.payload?.token;
+
+      /* 🔥 PERSIST AUTH (MOST IMPORTANT) */
+      if (loggedUser && token) {
+        localStorage.setItem("user", JSON.stringify(loggedUser));
+        localStorage.setItem("token", token);
+      }
+
+      /* 🔥 FETCH CART AFTER LOGIN */
       dispatch(fetchCart());
     }
   };
+
+  /* ===============================
+     AUTO LOGIN ON REFRESH
+     (START → END PAGE CONTINUITY)
+  ================================ */
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
+    if (!user && storedUser && storedToken) {
+      // Redux state will be hydrated by authSlice
+      // (assuming authSlice checks localStorage)
+      dispatch(fetchCart());
+    }
+  }, [dispatch, user]);
 
   /* ===============================
      REDIRECT IF LOGGED IN
@@ -70,7 +96,7 @@ export default function Login() {
           required
         />
 
-        {/* PRIMARY GOLD BUTTON */}
+        {/* PRIMARY BUTTON */}
         <button
           type="submit"
           className="auth-btn"
@@ -84,11 +110,8 @@ export default function Login() {
           <span>New to VK Mart?</span>
         </div>
 
-        {/* SECONDARY GOLD BUTTON */}
-        <Link
-          to="/signup"
-          className="auth-link-btn"
-        >
+        {/* SIGNUP LINK */}
+        <Link to="/signup" className="auth-link-btn">
           Create your VK Mart account
         </Link>
 

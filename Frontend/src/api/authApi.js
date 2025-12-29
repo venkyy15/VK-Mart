@@ -1,10 +1,12 @@
+// src/api/authApi.js
+
 import axiosInstance from "./axiosInstance";
 
 /* =====================================
    AUTH API
 ===================================== */
 
-// ---------- SIGNUP ----------
+/* ---------- SIGNUP ---------- */
 export const signupUser = async ({ name, email, password }) => {
   return axiosInstance.post("/auth/signup", {
     name,
@@ -13,7 +15,7 @@ export const signupUser = async ({ name, email, password }) => {
   });
 };
 
-// ---------- LOGIN ----------
+/* ---------- LOGIN ---------- */
 export const loginUser = async ({ email, password }) => {
   return axiosInstance.post("/auth/login", {
     email,
@@ -21,23 +23,22 @@ export const loginUser = async ({ email, password }) => {
   });
 };
 
-// ---------- GET PROFILE ----------
+/* ---------- GET PROFILE ---------- */
 export const getProfile = async () => {
   return axiosInstance.get("/auth/profile");
 };
 
-// ---------- UPDATE PROFILE ----------
+/* ---------- UPDATE PROFILE ---------- */
 export const updateProfileApi = async ({ name }) => {
   return axiosInstance.put("/auth/profile", { name });
 };
-import axios from "./axiosInstance";
 
-/* 🔐 CHANGE PASSWORD */
-export const changePasswordApi = (data) => {
-  return axios.put("/auth/change-password", data);
+/* ---------- CHANGE PASSWORD ---------- */
+export const changePasswordApi = async (data) => {
+  return axiosInstance.put("/auth/change-password", data);
 };
 
-/* 📱 ACTIVE SESSIONS */
-export const getSessionsApi = () => {
-  return axios.get("/auth/sessions");
+/* ---------- ACTIVE SESSIONS ---------- */
+export const getSessionsApi = async () => {
+  return axiosInstance.get("/auth/sessions");
 };
