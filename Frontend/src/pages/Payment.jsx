@@ -1,15 +1,28 @@
-import { useState, useMemo } from "react";
+// src/pages/Payment.jsx
+
+import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { placeOrderAsync } from "../features/order/orderSlice";
 import { clearCart } from "../features/cart/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Payment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const cartItems = useSelector((state) => state.cart.items);
-  const selectedAddress = useSelector((state) => state.address.selected);
+  /* 🔥 USER PARAM */
+  const { userId } = useParams();
+
+  /* 🔥 AUTH USER */
+  const user = useSelector((state) => state.auth.user);
+
+  const cartItems = useSelector((state) =>
+    state.cart.items.filter((item) => item?.product)
+  );
+
+  const selectedAddress = useSelector(
+    (state) => state.address.selected
+  );
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [upiId, setUpiId] = useState("");
@@ -20,6 +33,20 @@ export default function Payment() {
     cvv: ""
   });
   const [loading, setLoading] = useState(false);
+
+  /* ========================
+     SAFETY: USER CHECK
+  ======================== */
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (userId !== user._id) {
+      navigate(`/payment/${user._id}`, { replace: true });
+    }
+  }, [user, userId, navigate]);
 
   /* ===============================
      ORDER SUMMARY CALCULATION
@@ -82,7 +109,7 @@ export default function Payment() {
         placeOrderAsync({
           shippingAddress: shippingPayload,
           paymentMethod,
-          totalAmount: totalAmount // ✅ BACKEND EXPECTS THIS
+          totalAmount
         })
       );
 
@@ -90,7 +117,9 @@ export default function Payment() {
 
       if (placeOrderAsync.fulfilled.match(result)) {
         dispatch(clearCart());
-        navigate("/order-success");
+
+        /* 🔥 USER PARAM CONTINUITY */
+        navigate(`/order-success/${user._id}`);
       } else {
         alert(result.payload || "Order failed");
       }
@@ -100,6 +129,9 @@ export default function Payment() {
     }
   };
 
+  /* ===============================
+     UI
+  ================================ */
   return (
     <div className="payment-page">
       <div className="payment-container">
@@ -147,16 +179,29 @@ export default function Payment() {
         {/* RIGHT */}
         <div className="payment-summary">
           <h3>Order Summary</h3>
-          <p>Items ({totalItems}): ₹{totalAmount.toLocaleString("en-IN")}</p>
+
+          <p>
+            Items ({totalItems}): ₹
+            {totalAmount.toLocaleString("en-IN")}
+          </p>
+
           <p>Delivery: FREE</p>
+
           <hr />
-          <h4>Total: ₹{totalAmount.toLocaleString("en-IN")}</h4>
-          
+
+          <h4>
+            Total: ₹
+            {totalAmount.toLocaleString("en-IN")}
+          </h4>
+
           <button
+            className="place-order-btn"
             onClick={handlePlaceOrder}
             disabled={loading}
           >
-            {loading ? "Processing..." : "Use this payment method"}
+            {loading
+              ? "Processing..."
+              : "Use this payment method"}
           </button>
         </div>
 

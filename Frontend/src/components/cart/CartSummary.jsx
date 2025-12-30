@@ -9,8 +9,11 @@ const CartSummary = memo(function CartSummary({
 }) {
   const navigate = useNavigate();
 
-  // ✅ SIMPLE SELECTOR (no logic here)
+  // 🔥 CART ITEMS
   const cartItems = useSelector((state) => state.cart.items);
+
+  // 🔥 AUTH USER (FOR userId)
+  const user = useSelector((state) => state.auth.user);
 
   /* =========================
      MEMOIZED CALCULATIONS
@@ -29,6 +32,20 @@ const CartSummary = memo(function CartSummary({
       totalPrice: priceTotal
     };
   }, [cartItems]);
+
+  /* =========================
+     HANDLE CHECKOUT
+  ========================= */
+  const handleCheckout = () => {
+    if (!user?._id) {
+      // safety fallback (should not happen due to ProtectedRoute)
+      navigate("/login");
+      return;
+    }
+
+    // ✅ CORRECT PARAM ROUTE
+    navigate(`/checkout/${user._id}`);
+  };
 
   return (
     <div className="cart-summary">
@@ -55,7 +72,7 @@ const CartSummary = memo(function CartSummary({
         <button
           className="checkout-btn"
           disabled={cartItems.length === 0}
-          onClick={() => navigate("/checkout")}
+          onClick={handleCheckout}
         >
           Proceed to Checkout
         </button>

@@ -1,12 +1,20 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+// src/pages/LoginSecurity.jsx
+
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { changePasswordApi } from "../api/authApi";
 
 export default function LoginSecurity() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  /* 🔥 USER ID FROM URL */
+  const { userId } = useParams();
+
+  /* 🔥 AUTH USER */
+  const user = useSelector((state) => state.auth.user);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -14,7 +22,25 @@ export default function LoginSecurity() {
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  /* 🔐 UPDATE PASSWORD */
+  /* ========================
+     SAFETY CHECK
+  ======================== */
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (userId !== user._id) {
+      navigate(`/login-security/${user._id}`, {
+        replace: true
+      });
+    }
+  }, [user, userId, navigate]);
+
+  /* ========================
+     UPDATE PASSWORD
+  ======================== */
   const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       alert("All fields are required");
@@ -28,33 +54,45 @@ export default function LoginSecurity() {
 
     try {
       setLoading(true);
+
       await changePasswordApi({
         currentPassword,
         newPassword
       });
 
       alert("Password updated successfully");
+
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
       alert(
-        err.response?.data?.message || "Password update failed"
+        err.response?.data?.message ||
+          "Password update failed"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  /* 📱 LOGOUT ALL */
+  /* ========================
+     LOGOUT ALL DEVICES
+  ======================== */
   const handleLogoutAll = () => {
     dispatch(logout());
     navigate("/login");
   };
 
+  if (!user) return null;
+
+  /* ========================
+     UI
+  ======================== */
   return (
     <div className="profile-page">
-      <h2 style={{ marginBottom: "16px" }}>Login & Security</h2>
+      <h2 style={{ marginBottom: "16px" }}>
+        Login & Security
+      </h2>
 
       <div className="profile-grid">
         {/* 🔐 CHANGE PASSWORD */}
@@ -67,7 +105,9 @@ export default function LoginSecurity() {
             type="password"
             placeholder="Current password"
             value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+            onChange={(e) =>
+              setCurrentPassword(e.target.value)
+            }
           />
 
           <input
@@ -75,7 +115,9 @@ export default function LoginSecurity() {
             type="password"
             placeholder="New password"
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={(e) =>
+              setNewPassword(e.target.value)
+            }
           />
 
           <input
@@ -83,7 +125,9 @@ export default function LoginSecurity() {
             type="password"
             placeholder="Confirm new password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) =>
+              setConfirmPassword(e.target.value)
+            }
           />
 
           <button
@@ -91,7 +135,9 @@ export default function LoginSecurity() {
             onClick={handleUpdatePassword}
             disabled={loading}
           >
-            {loading ? "Updating..." : "Update Password"}
+            {loading
+              ? "Updating..."
+              : "Update Password"}
           </button>
         </div>
 
@@ -100,7 +146,12 @@ export default function LoginSecurity() {
           <h3>Active Sessions</h3>
           <p>You are logged in on this device</p>
 
-          <ul style={{ fontSize: "14px", marginTop: "10px" }}>
+          <ul
+            style={{
+              fontSize: "14px",
+              marginTop: "10px"
+            }}
+          >
             <li>🖥 Desktop – Chrome (India)</li>
           </ul>
 
@@ -116,13 +167,17 @@ export default function LoginSecurity() {
         {/* 🔔 LOGIN ALERTS */}
         <div className="profile-card">
           <h3>Login Alerts</h3>
-          <p>Get notified when a new login happens</p>
+          <p>
+            Get notified when a new login happens
+          </p>
 
           <label className="alert-toggle">
             <input
               type="checkbox"
               checked={alertsEnabled}
-              onChange={() => setAlertsEnabled(!alertsEnabled)}
+              onChange={() =>
+                setAlertsEnabled(!alertsEnabled)
+              }
             />
             Enable email alerts
           </label>

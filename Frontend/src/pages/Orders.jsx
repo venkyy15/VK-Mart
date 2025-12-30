@@ -1,15 +1,52 @@
+// src/pages/Orders.jsx
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom"; // 🔥 ADD
+import { Link, useParams, useNavigate } from "react-router-dom";
+
 import { fetchOrdersAsync } from "../features/order/orderSlice";
 
 export default function Orders() {
   const dispatch = useDispatch();
-  const { list, loading, error } = useSelector((state) => state.orders);
+  const navigate = useNavigate();
 
+  /* 🔥 USER ID FROM URL */
+  const { userId } = useParams();
+
+  /* 🔥 AUTH USER FROM REDUX */
+  const user = useSelector((state) => state.auth.user);
+
+  const { list, loading, error } = useSelector(
+    (state) => state.orders
+  );
+
+  /* ========================
+     SAFETY CHECK
+  ======================== */
   useEffect(() => {
-    dispatch(fetchOrdersAsync());
-  }, [dispatch]);
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    // 🔥 URL userId must match logged-in user
+    if (userId !== user._id) {
+      navigate(`/orders/${user._id}`, {
+        replace: true
+      });
+      return;
+    }
+  }, [user, userId, navigate]);
+
+  /* ========================
+     FETCH ORDERS
+  ======================== */
+  useEffect(() => {
+    if (user && userId === user._id) {
+      // 🔥 userId only for routing continuity
+      dispatch(fetchOrdersAsync(userId));
+    }
+  }, [dispatch, user, userId]);
 
   /* ========================
      STATES
@@ -40,11 +77,15 @@ export default function Orders() {
   ======================== */
   return (
     <div className="orders-page" style={{ padding: 20 }}>
-      <h2 style={{ marginBottom: 20 }}>Your Orders</h2>
+      <h2 style={{ marginBottom: 20 }}>
+        Your Orders
+      </h2>
 
       {list.map((order) => {
         /* 🔐 SAFE NORMALIZATION */
-        const orderItems = order.items || order.orderItems || [];
+        const orderItems =
+          order.items || order.orderItems || [];
+
         const total =
           order.totalAmount !== undefined
             ? order.totalAmount
@@ -67,21 +108,27 @@ export default function Orders() {
             {/* ===== ORDER HEADER ===== */}
             <div style={{ marginBottom: 10 }}>
               <p>
-                <strong>Order ID:</strong> {order._id}
+                <strong>Order ID:</strong>{" "}
+                {order._id}
               </p>
+
               <p>
-                <strong>Status:</strong> {order.status}
+                <strong>Status:</strong>{" "}
+                {order.status}
               </p>
+
               <p>
-                <strong>Payment:</strong> {order.paymentMethod}
+                <strong>Payment:</strong>{" "}
+                {order.paymentMethod}
               </p>
+
               <p>
                 <strong>Total:</strong> ₹{total}
               </p>
 
-              {/* 🔥 PARAM LINK (THIS IS THE KEY FIX) */}
+              {/* 🔥 ORDER DETAILS LINK */}
               <Link
-                to={`/orders/${order._id}`}
+                to={`/orders/${user._id}/${order._id}`}
                 style={{
                   display: "inline-block",
                   marginTop: 8,
@@ -99,7 +146,12 @@ export default function Orders() {
               <strong>Items:</strong>
 
               {orderItems.length === 0 ? (
-                <p style={{ marginTop: 6, color: "#777" }}>
+                <p
+                  style={{
+                    marginTop: 6,
+                    color: "#777"
+                  }}
+                >
                   No items found
                 </p>
               ) : (
@@ -127,8 +179,14 @@ export default function Orders() {
                       }}
                     >
                       <img
-                        src={item.product?.image || "/placeholder.png"}
-                        alt={item.product?.name}
+                        src={
+                          item.product?.image ||
+                          "/placeholder.png"
+                        }
+                        alt={
+                          item.product?.name ||
+                          "Product"
+                        }
                         style={{
                           maxWidth: "100%",
                           maxHeight: "100%",
@@ -139,12 +197,19 @@ export default function Orders() {
 
                     {/* DETAILS */}
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontWeight: 600 }}>
-                        {item.product?.name || "Product"}
+                      <p
+                        style={{
+                          fontWeight: 600
+                        }}
+                      >
+                        {item.product?.name ||
+                          "Product"}
                       </p>
+
                       <p style={{ fontSize: 14 }}>
                         Qty: {item.qty}
                       </p>
+
                       <p style={{ fontSize: 14 }}>
                         Price: ₹{item.price}
                       </p>
@@ -157,18 +222,31 @@ export default function Orders() {
             {/* ===== ADDRESS ===== */}
             {address && (
               <div style={{ marginTop: 16 }}>
-                <strong>Delivery Address:</strong>
-                <p style={{ fontSize: 14, marginTop: 4 }}>
-                  {address.fullName}, {address.phone}
+                <strong>
+                  Delivery Address:
+                </strong>
+
+                <p
+                  style={{
+                    fontSize: 14,
+                    marginTop: 4
+                  }}
+                >
+                  {address.fullName},{" "}
+                  {address.phone}
                 </p>
+
                 <p style={{ fontSize: 14 }}>
                   {address.addressLine1}
                   {address.addressLine2
                     ? `, ${address.addressLine2}`
                     : ""}
                 </p>
+
                 <p style={{ fontSize: 14 }}>
-                  {address.city}, {address.state} – {address.pincode}
+                  {address.city},{" "}
+                  {address.state} –{" "}
+                  {address.pincode}
                 </p>
               </div>
             )}

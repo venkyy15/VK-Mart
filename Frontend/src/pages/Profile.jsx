@@ -2,19 +2,35 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { logout, updateProfile } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/profile.css";
+
 export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  /* 🔥 USER ID FROM URL */
+  const { userId } = useParams();
+
+  /* 🔥 AUTH USER */
   const { user, loading } = useSelector((state) => state.auth);
 
-  // 🔐 Protect route
+  /* ========================
+     SAFETY CHECK
+  ======================== */
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (userId !== user._id) {
+      navigate(`/profile/${user._id}`, {
+        replace: true
+      });
+    }
+  }, [user, userId, navigate]);
 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -23,6 +39,9 @@ export default function Profile() {
     if (user) setName(user.name);
   }, [user]);
 
+  /* ========================
+     ACTIONS
+  ======================== */
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -37,9 +56,14 @@ export default function Profile() {
 
   if (!user) return null;
 
+  /* ========================
+     UI
+  ======================== */
   return (
     <div className="profile-page">
-      <h2 className="profile-title">Your Account</h2>
+      <h2 className="profile-title">
+        Your Account
+      </h2>
 
       <div className="profile-grid">
         {/* PROFILE INFO */}
@@ -65,7 +89,9 @@ export default function Profile() {
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) =>
+                    setName(e.target.value)
+                  }
                 />
 
                 <div className="profile-edit-actions">
@@ -74,7 +100,9 @@ export default function Profile() {
                     onClick={handleSaveName}
                     disabled={loading}
                   >
-                    {loading ? "Saving..." : "Save"}
+                    {loading
+                      ? "Saving..."
+                      : "Save"}
                   </button>
 
                   <button
@@ -101,34 +129,51 @@ export default function Profile() {
         {/* ORDERS */}
         <div
           className="profile-card clickable"
-          onClick={() => navigate("/orders")}
+          onClick={() =>
+            navigate(`/orders/${user._id}`)
+          }
         >
           <h3>Your Orders</h3>
-          <p>Track, return, or buy things again</p>
+          <p>
+            Track, return, or buy things again
+          </p>
         </div>
 
         {/* ADDRESSES */}
         <div
           className="profile-card clickable"
-          onClick={() => navigate("/addresses")}
+          onClick={() =>
+            navigate(`/addresses/${user._id}`)
+          }
         >
           <h3>Your Addresses</h3>
-          <p>Add or manage delivery addresses</p>
+          <p>
+            Add or manage delivery addresses
+          </p>
         </div>
 
         {/* SECURITY */}
         <div
           className="profile-card clickable"
-          onClick={() => navigate("/login-security")}
+          onClick={() =>
+            navigate(
+              `/login-security/${user._id}`
+            )
+          }
         >
           <h3>Login & Security</h3>
-          <p>Update password and account details</p>
+          <p>
+            Update password and account details
+          </p>
         </div>
       </div>
 
       {/* LOGOUT */}
       <div className="profile-actions">
-        <button className="logout-btn" onClick={handleLogout}>
+        <button
+          className="logout-btn"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </div>

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "../pages/Home";
 import Category from "../pages/Category";
@@ -8,31 +8,72 @@ import Checkout from "../pages/Checkout";
 import Payment from "../pages/Payment";
 import OrderSuccess from "../pages/OrderSuccess";
 import Orders from "../pages/Orders";
+import OrderDetails from "../pages/OrderDetails";
 import Profile from "../pages/Profile";
 import Addresses from "../pages/Addresses";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 
-/* 🔐 NEW PAGE */
+/* 🔐 EXTRA PAGE */
 import LoginSecurity from "../pages/LoginSecurity";
-
-/* 🔥 ORDER DETAILS PAGE */
-import OrderDetails from "../pages/OrderDetails";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* ================= PUBLIC ROUTES ================= */}
-      <Route path="/" element={<Home />} />
-      <Route path="/category/:name" element={<Category />} />
-      <Route path="/product/:id" element={<Product />} />
-      <Route path="/cart" element={<Cart />} />
+      {/* =================================================
+         ROOT – ALWAYS GO TO LOGIN FIRST
+      ================================================= */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* ================= PROTECTED ROUTES ================= */}
+      {/* ================= AUTH ROUTES ================= */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
+      {/* ================= HOME ================= */}
       <Route
-        path="/checkout"
+        path="/:userId"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= CATEGORY ================= */}
+      <Route
+        path="/:userId/category/:name"
+        element={
+          <ProtectedRoute>
+            <Category />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= PRODUCT ================= */}
+      <Route
+        path="/:userId/product/:id"
+        element={
+          <ProtectedRoute>
+            <Product />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= CART ================= */}
+      <Route
+        path="/cart/:userId"
+        element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= CHECKOUT ================= */}
+      <Route
+        path="/checkout/:userId"
         element={
           <ProtectedRoute>
             <Checkout />
@@ -40,8 +81,9 @@ export default function AppRoutes() {
         }
       />
 
+      {/* ================= PAYMENT ================= */}
       <Route
-        path="/payment"
+        path="/payment/:userId"
         element={
           <ProtectedRoute>
             <Payment />
@@ -49,17 +91,9 @@ export default function AppRoutes() {
         }
       />
 
+      {/* ================= ORDER SUCCESS ================= */}
       <Route
-        path="/addresses"
-        element={
-          <ProtectedRoute>
-            <Addresses />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/order-success"
+        path="/order-success/:userId"
         element={
           <ProtectedRoute>
             <OrderSuccess />
@@ -67,9 +101,9 @@ export default function AppRoutes() {
         }
       />
 
-      {/* 🔥 ORDERS LIST */}
+      {/* ================= ORDERS LIST ================= */}
       <Route
-        path="/orders"
+        path="/orders/:userId"
         element={
           <ProtectedRoute>
             <Orders />
@@ -77,9 +111,9 @@ export default function AppRoutes() {
         }
       />
 
-      {/* 🔥 ORDER DETAILS (PARAM ROUTE) */}
+      {/* ================= ORDER DETAILS ================= */}
       <Route
-        path="/orders/:id"
+        path="/orders/:userId/:orderId"
         element={
           <ProtectedRoute>
             <OrderDetails />
@@ -87,8 +121,19 @@ export default function AppRoutes() {
         }
       />
 
+      {/* ================= ADDRESSES ================= */}
       <Route
-        path="/profile"
+        path="/addresses/:userId"
+        element={
+          <ProtectedRoute>
+            <Addresses />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= PROFILE ================= */}
+      <Route
+        path="/profile/:userId"
         element={
           <ProtectedRoute>
             <Profile />
@@ -96,9 +141,9 @@ export default function AppRoutes() {
         }
       />
 
-      {/* 🔐 LOGIN & SECURITY */}
+      {/* ================= LOGIN SECURITY ================= */}
       <Route
-        path="/login-security"
+        path="/login-security/:userId"
         element={
           <ProtectedRoute>
             <LoginSecurity />
@@ -106,9 +151,8 @@ export default function AppRoutes() {
         }
       />
 
-      {/* ================= AUTH ROUTES ================= */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      {/* ================= FALLBACK ================= */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

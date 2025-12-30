@@ -1,6 +1,7 @@
 // src/pages/Checkout.jsx
+
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import {
@@ -17,9 +18,23 @@ export default function Checkout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const cartItems = useSelector((state) => state.cart.items);
-  const addresses = useSelector((state) => state.address.list || []);
-  const selectedAddress = useSelector((state) => state.address.selected);
+  /* 🔥 USER PARAM FROM URL */
+  const { userId } = useParams();
+
+  /* 🔥 AUTH USER (SAFETY CHECK) */
+  const user = useSelector((state) => state.auth.user);
+
+  const cartItems = useSelector((state) =>
+    state.cart.items.filter((item) => item?.product)
+  );
+
+  const addresses = useSelector(
+    (state) => state.address.list || []
+  );
+
+  const selectedAddress = useSelector(
+    (state) => state.address.selected
+  );
 
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [newAddress, setNewAddress] = useState({
@@ -32,11 +47,30 @@ export default function Checkout() {
     country: "India"
   });
 
+  /* ========================
+     SAFETY: USER MISMATCH
+  ======================== */
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (userId !== user._id) {
+      navigate(`/checkout/${user._id}`, { replace: true });
+    }
+  }, [user, userId, navigate]);
+
+  /* ========================
+     FETCH ADDRESSES
+  ======================== */
   useEffect(() => {
     dispatch(fetchAddressesAsync());
   }, [dispatch]);
 
-  /* ---------------- ADD ADDRESS ---------------- */
+  /* ========================
+     ADD ADDRESS
+  ======================== */
   const handleAddAddress = async (e) => {
     e.preventDefault();
 
@@ -56,7 +90,9 @@ export default function Checkout() {
     }
   };
 
-  /* ---------------- CART EMPTY ---------------- */
+  /* ========================
+     EMPTY CART
+  ======================== */
   if (!cartItems || cartItems.length === 0) {
     return (
       <EmptyState
@@ -68,6 +104,9 @@ export default function Checkout() {
     );
   }
 
+  /* ========================
+     UI
+  ======================== */
   return (
     <div className="checkout-page">
       <h2 className="checkout-title">Checkout</h2>
@@ -113,7 +152,10 @@ export default function Checkout() {
             + Add New Address
           </button>
         ) : (
-          <form className="address-form" onSubmit={handleAddAddress}>
+          <form
+            className="address-form"
+            onSubmit={handleAddAddress}
+          >
             <h4>Add New Address</h4>
 
             <div className="address-grid">
@@ -123,7 +165,10 @@ export default function Checkout() {
                 required
                 value={newAddress.name}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, name: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    name: e.target.value
+                  })
                 }
               />
 
@@ -133,7 +178,10 @@ export default function Checkout() {
                 required
                 value={newAddress.phone}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, phone: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    phone: e.target.value
+                  })
                 }
               />
 
@@ -143,7 +191,10 @@ export default function Checkout() {
                 required
                 value={newAddress.street}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, street: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    street: e.target.value
+                  })
                 }
               />
 
@@ -153,7 +204,10 @@ export default function Checkout() {
                 required
                 value={newAddress.city}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, city: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    city: e.target.value
+                  })
                 }
               />
 
@@ -163,7 +217,10 @@ export default function Checkout() {
                 required
                 value={newAddress.state}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, state: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    state: e.target.value
+                  })
                 }
               />
 
@@ -173,7 +230,10 @@ export default function Checkout() {
                 required
                 value={newAddress.pincode}
                 onChange={(e) =>
-                  setNewAddress({ ...newAddress, pincode: e.target.value })
+                  setNewAddress({
+                    ...newAddress,
+                    pincode: e.target.value
+                  })
                 }
               />
             </div>
@@ -201,7 +261,9 @@ export default function Checkout() {
 
         {cartItems.map((item, index) => {
           const key =
-            item.product?._id || item._id || `cart-item-${index}`;
+            item.product?._id ||
+            item._id ||
+            `cart-item-${index}`;
 
           return <CartItem key={key} item={item} />;
         })}
@@ -214,7 +276,9 @@ export default function Checkout() {
       <button
         className="continue-payment-btn"
         disabled={!selectedAddress}
-        onClick={() => navigate("/payment")}
+        onClick={() =>
+          navigate(`/payment/${user._id}`)
+        }
       >
         Continue to Payment
       </button>

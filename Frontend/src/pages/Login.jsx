@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { login } from "../features/auth/authSlice";
 import { fetchCart } from "../features/cart/cartSlice";
@@ -9,6 +9,7 @@ import Loader from "../components/common/Loader";
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user, loading, error } = useSelector(
     (state) => state.auth
@@ -23,7 +24,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await dispatch(
+    const result = await dispatch(
       login({
         email: email.trim(),
         password
@@ -31,42 +32,30 @@ export default function Login() {
     );
 
     /* ✅ LOGIN SUCCESS */
-    if (res.meta.requestStatus === "fulfilled") {
-      const loggedUser = res.payload?.user;
-      const token = res.payload?.token;
+    if (
+      login.fulfilled.match(result) &&
+      result.payload?._id
+    ) {
+      const userId = result.payload._id;
 
-      /* 🔥 PERSIST AUTH (MOST IMPORTANT) */
-      if (loggedUser && token) {
-        localStorage.setItem("user", JSON.stringify(loggedUser));
-        localStorage.setItem("token", token);
-      }
-
-      /* 🔥 FETCH CART AFTER LOGIN */
+      // 🔥 Fetch cart AFTER login
       dispatch(fetchCart());
+
+      // 🔥 Redirect to HOME with userId
+      navigate(`/${userId}`, { replace: true });
     }
   };
 
   /* ===============================
-     AUTO LOGIN ON REFRESH
-     (START → END PAGE CONTINUITY)
+     AUTO REDIRECT IF ALREADY LOGGED IN
+     (PAGE REFRESH SAFE)
   ================================ */
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-
-    if (!user && storedUser && storedToken) {
-      // Redux state will be hydrated by authSlice
-      // (assuming authSlice checks localStorage)
+    if (user?._id) {
       dispatch(fetchCart());
+      navigate(`/${user._id}`, { replace: true });
     }
-  }, [dispatch, user]);
-
-  /* ===============================
-     REDIRECT IF LOGGED IN
-  ================================ */
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
+  }, [user, dispatch, navigate]);
 
   return (
     <div className="auth-page">
@@ -76,7 +65,11 @@ export default function Login() {
           Sign in to continue shopping
         </p>
 
-        {error && <div className="auth-error">{error}</div>}
+        {error && (
+          <div className="auth-error">
+            {error}
+          </div>
+        )}
 
         <label>Email</label>
         <input
@@ -111,7 +104,10 @@ export default function Login() {
         </div>
 
         {/* SIGNUP LINK */}
-        <Link to="/signup" className="auth-link-btn">
+        <Link
+          to="/signup"
+          className="auth-link-btn"
+        >
           Create your VK Mart account
         </Link>
 

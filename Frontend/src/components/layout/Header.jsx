@@ -1,36 +1,51 @@
 // src/components/layout/Header.jsx
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useMemo } from "react";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { userId } = useParams(); // 🔥 URL PARAM
   const [search, setSearch] = useState("");
 
-  // 🔥 Cart items from Redux
+  // 🔥 Redux state
   const cartItems = useSelector((state) => state.cart.items);
   const user = useSelector((state) => state.auth.user);
 
-  // ✅ SAFE cart count (won’t break even if data shape changes)
+  // ✅ SAFE cart count
   const cartCount = useMemo(() => {
     if (!Array.isArray(cartItems)) return 0;
     return cartItems.filter((item) => item?.product).length;
   }, [cartItems]);
 
+  /* ===============================
+     SEARCH HANDLER
+  ================================ */
   const handleSearch = (e) => {
     e.preventDefault();
-    if (search.trim()) {
-      navigate(`/?keyword=${search.trim()}`);
-      setSearch("");
+
+    if (!search.trim()) return;
+
+    if (userId) {
+      navigate(`/${userId}?keyword=${search.trim()}`);
+    } else {
+      navigate(`/login`);
     }
+
+    setSearch("");
   };
+
+  /* ===============================
+     SAFE USER ID
+  ================================ */
+  const activeUserId = userId || user?._id;
 
   return (
     <header className="header fixed-header">
       {/* LOGO */}
       <div className="header-left">
-        <Link to="/" className="logo">
+        <Link to={activeUserId ? `/${activeUserId}` : "/login"} className="logo">
           VK MART
         </Link>
       </div>
@@ -39,26 +54,50 @@ export default function Header() {
       <form className="header-search" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search Vk Mart"
+          placeholder="Search VK Mart"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
 
-      {/* RIGHT */}
+      {/* RIGHT SIDE */}
       <div className="header-right">
-        <Link to={user ? "/profile" : "/login"} className="header-link">
+        {/* ACCOUNT */}
+        <Link
+          to={
+            activeUserId
+              ? `/profile/${activeUserId}`
+              : "/login"
+          }
+          className="header-link"
+        >
           <span>Hi, {user ? user.name : "Sign in"}</span>
           <strong>Account</strong>
         </Link>
 
-        <Link to="/orders" className="header-link">
+        {/* ORDERS */}
+        <Link
+          to={
+            activeUserId
+              ? `/orders/${activeUserId}`
+              : "/login"
+          }
+          className="header-link"
+        >
           <span>Returns</span>
           <strong>& Orders</strong>
         </Link>
 
-        <Link to="/cart" className="header-cart">
+        {/* CART */}
+        <Link
+          to={
+            activeUserId
+              ? `/cart/${activeUserId}`
+              : "/login"
+          }
+          className="header-cart"
+        >
           Cart ({cartCount})
         </Link>
       </div>

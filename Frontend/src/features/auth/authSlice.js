@@ -101,7 +101,7 @@ export const updateProfile = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: userFromStorage,   // ✅ restore on refresh
+    user: userFromStorage, 
     loading: false,
     error: null,
     signupSuccess: false
