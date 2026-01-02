@@ -45,7 +45,7 @@ export default function Header() {
     <header className="header fixed-header">
       {/* LOGO */}
       <div className="header-left">
-        <Link to={activeUserId ? `/${activeUserId}` : "/login"} className="logo">
+        <Link to="/" className="text-logo">
           VK MART
         </Link>
       </div>

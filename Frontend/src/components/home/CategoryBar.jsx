@@ -1,5 +1,3 @@
-// src/components/home/CategoryBar.jsx
-
 import { Link } from "react-router-dom";
 
 const categories = [

@@ -1,6 +1,9 @@
+// src/api/axiosInstance.js
 import axios from "axios";
 
-/* AXIOS INSTANCE*/
+/* ================================
+   AXIOS INSTANCE
+================================ */
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/api",
   headers: {
@@ -8,7 +11,10 @@ const axiosInstance = axios.create({
   }
 });
 
-/*ATTACH JWT TOKEN TO REQUEST*/
+/* ================================
+   REQUEST INTERCEPTOR
+   (Attach JWT token)
+================================ */
 axiosInstance.interceptors.request.use(
   (config) => {
     try {
@@ -17,12 +23,15 @@ axiosInstance.interceptors.request.use(
       if (storedUser) {
         const user = JSON.parse(storedUser);
 
-        if (user && user.token) {
-          config.headers.Authorization = `Bearer ${user.token}`;
+        if (user?.token) {
+          config.headers = {
+            ...config.headers,
+            Authorization: `Bearer ${user.token}`
+          };
         }
       }
-    } catch (error) {
-      console.error("❌ Failed to parse user token", error);
+    } catch (err) {
+      console.error("❌ Token read error:", err);
     }
 
     return config;
@@ -30,13 +39,19 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/*RESPONSE ERROR HANDLING*/
+/* ================================
+   RESPONSE INTERCEPTOR
+================================ */
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.warn("⚠️ Unauthorized request (401)");
-     }
+      console.warn("⚠️ Unauthorized (401) – Token missing or expired");
+
+      // OPTIONAL BUT PROFESSIONAL:
+      // Auto logout if token expired
+      localStorage.removeItem("vk_current_user");
+    }
 
     return Promise.reject(error);
   }

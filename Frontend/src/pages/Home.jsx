@@ -7,8 +7,8 @@ import { useSearchParams } from "react-router-dom";
 import { getProducts } from "../features/product/productSlice";
 
 import Banner from "../components/home/Banner";
-import PrimeCard from "../components/home/PrimeCard";
 import CategoryBar from "../components/home/CategoryBar";
+import PrimeCard from "../components/home/PrimeCard";
 import ProductGrid from "../components/product/ProductGrid";
 import Loader from "../components/common/Loader";
 import EmptyState from "../components/common/EmptyState";
@@ -23,19 +23,41 @@ export default function Home() {
     (state) => state.products
   );
 
-  // ✅ FETCH BASED ON SEARCH
+  // ✅ Fetch products (normal / search)
   useEffect(() => {
     dispatch(getProducts(keyword));
   }, [dispatch, keyword]);
 
   return (
-    <div className="home-page">
-      {!keyword && <Banner />}
-      {!keyword && <CategoryBar />}
-      {!keyword && <PrimeCard />}
+    <main
+      className="home-page"
+      style={{
+        width: "100%",
+        maxWidth: "1400px",
+        margin: "0 auto",
+        padding: "16px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* =====================
+          HOME TOP SECTIONS
+      ===================== */}
+      {!keyword && (
+        <>
+          <Banner />
+          <CategoryBar />
+          <PrimeCard />
+        </>
+      )}
 
+      {/* =====================
+          LOADING
+      ===================== */}
       {loading && <Loader />}
 
+      {/* =====================
+          ERROR
+      ===================== */}
       {!loading && error && (
         <EmptyState
           title="Something went wrong"
@@ -43,6 +65,9 @@ export default function Home() {
         />
       )}
 
+      {/* =====================
+          EMPTY RESULT
+      ===================== */}
       {!loading && !error && list.length === 0 && (
         <EmptyState
           title="No products found"
@@ -54,9 +79,12 @@ export default function Home() {
         />
       )}
 
-      {!loading && list.length > 0 && (
+      {/* =====================
+          PRODUCT GRID
+      ===================== */}
+      {!loading && !error && list.length > 0 && (
         <ProductGrid products={list} />
       )}
-    </div>
+    </main>
   );
 }
