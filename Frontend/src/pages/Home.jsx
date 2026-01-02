@@ -23,7 +23,7 @@ export default function Home() {
     (state) => state.products
   );
 
-  // ✅ Fetch products (normal / search)
+  // 🔥 Fetch products (normal / search)
   useEffect(() => {
     dispatch(getProducts(keyword));
   }, [dispatch, keyword]);
@@ -44,8 +44,13 @@ export default function Home() {
       ===================== */}
       {!keyword && (
         <>
-          <Banner />
+          {/* CATEGORIES FIRST */}
           <CategoryBar />
+
+          {/* BANNER BELOW CATEGORIES */}
+          <Banner />
+
+          {/* PRIME CARD */}
           <PrimeCard />
         </>
       )}
