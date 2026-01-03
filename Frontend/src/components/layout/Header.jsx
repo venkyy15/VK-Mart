@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
 import { logout } from "../../features/auth/authSlice";
 import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
+import { LogOut , ShoppingCart} from "lucide-react"
+
 
 export default function Header() {
   const navigate = useNavigate();
@@ -93,22 +95,19 @@ export default function Header() {
             <strong>& Orders</strong>
           </div>
         </Link>
-
-        {/* CART */}
         <Link
           to={userId ? `/cart/${userId}` : "/login"}
-          className="header-item cart-item"
+          className="cart-button"
         >
-          <div className="cart-icon-wrapper">
-            <FiShoppingCart className="cart-icon" />
-            <span className="cart-badge">{cartCount}</span>
-          </div>
+          <ShoppingCart size={28} />
+          <span className="cart-count">{cartCount}</span>
         </Link>
+
 
         {/* LOGOUT */}
         {user && (
           <button className="logout-text" onClick={handleLogout}>
-            Logout
+            <LogOut />
           </button>
         )}
       </div>

@@ -3,7 +3,6 @@ import { apiResponse } from "../utils/apiResponse.js";
 
 /* ======================================================
    GET ALL PRODUCTS (WITH SEARCH)
-   GET /api/products?keyword=iphone
 ====================================================== */
 export const getAllProducts = async (req, res, next) => {
   try {
@@ -11,10 +10,8 @@ export const getAllProducts = async (req, res, next) => {
 
     let filter = {};
 
-    // ✅ SEARCH SUPPORT (name + category + description)
     if (keyword && keyword.trim()) {
       const searchRegex = new RegExp(keyword.trim(), "i");
-
       filter = {
         $or: [
           { name: searchRegex },
@@ -24,9 +21,7 @@ export const getAllProducts = async (req, res, next) => {
       };
     }
 
-    const products = await Product.find(filter).sort({
-      createdAt: -1
-    });
+    const products = await Product.find(filter).sort({ createdAt: -1 });
 
     apiResponse(res, 200, true, "Products fetched", products);
   } catch (error) {
@@ -36,7 +31,6 @@ export const getAllProducts = async (req, res, next) => {
 
 /* ======================================================
    GET PRODUCT BY ID
-   GET /api/products/:id
 ====================================================== */
 export const getProductById = async (req, res, next) => {
   try {
@@ -54,7 +48,7 @@ export const getProductById = async (req, res, next) => {
 };
 
 /* ======================================================
-   CREATE PRODUCT (WITH IMAGE)
+   CREATE PRODUCT (CATEGORY-AWARE)
 ====================================================== */
 export const createProduct = async (req, res, next) => {
   try {
@@ -62,12 +56,16 @@ export const createProduct = async (req, res, next) => {
       name,
       slug,
       category,
+      brand,
       price,
       description,
-      stock
+      stock,
+
+      // ✅ NEW (IMPORTANT)
+      highlights,
+      specifications
     } = req.body;
 
-    // 🛑 Validation
     if (!name || !slug || !category || !price) {
       res.status(400);
       throw new Error("Required fields missing");
@@ -88,10 +86,15 @@ export const createProduct = async (req, res, next) => {
       name,
       slug,
       category,
+      brand,
       price,
       description,
       stock,
-      image: req.file.path // Cloudinary URL
+      image: req.file.path,
+
+      // 🔥 SAVE PRODUCT-SPECIFIC DATA
+      highlights: Array.isArray(highlights) ? highlights : [],
+      specifications: specifications || {}
     });
 
     apiResponse(res, 201, true, "Product created", product);
@@ -101,7 +104,7 @@ export const createProduct = async (req, res, next) => {
 };
 
 /* ======================================================
-   UPDATE PRODUCT
+   UPDATE PRODUCT (CATEGORY-SAFE)
 ====================================================== */
 export const updateProduct = async (req, res, next) => {
   try {
@@ -112,7 +115,25 @@ export const updateProduct = async (req, res, next) => {
       throw new Error("Product not found");
     }
 
-    Object.assign(product, req.body);
+    const {
+      highlights,
+      specifications,
+      ...rest
+    } = req.body;
+
+    // update normal fields
+    Object.assign(product, rest);
+
+    // update highlights safely
+    if (Array.isArray(highlights)) {
+      product.highlights = highlights;
+    }
+
+    // update specs safely
+    if (specifications && typeof specifications === "object") {
+      product.specifications = specifications;
+    }
+
     await product.save();
 
     apiResponse(res, 200, true, "Product updated", product);

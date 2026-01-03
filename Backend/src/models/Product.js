@@ -1,8 +1,39 @@
-// src/models/Product.js
 import mongoose from "mongoose";
 
+/* ============================
+   REVIEW SUB-SCHEMA
+============================ */
+const reviewSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5
+    },
+    comment: {
+      type: String,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
+/* ============================
+   PRODUCT SCHEMA
+============================ */
 const productSchema = new mongoose.Schema(
   {
+    /* BASIC INFO */
     name: {
       type: String,
       required: true,
@@ -19,24 +50,19 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      required: true
+      required: true,
+      index: true
+    },
+
+    brand: {
+      type: String,
+      default: "VK Mart"
     },
 
     price: {
       type: Number,
       required: true,
-      min: 0,
-      default: 0          // ✅ SAFETY
-    },
-
-    description: {
-      type: String,
-      default: ""
-    },
-
-    image: {
-      type: String,
-      required: true
+      min: 0
     },
 
     stock: {
@@ -45,9 +71,87 @@ const productSchema = new mongoose.Schema(
       min: 0
     },
 
+    image: {
+      type: String,
+      required: true
+    },
+
     isActive: {
       type: Boolean,
-      default: true       // ✅ future soft delete
+      default: true
+    },
+
+    /* ============================
+       DESCRIPTION (LONG)
+    ============================ */
+    description: {
+      type: String,
+      default: ""
+    },
+
+    /* ============================
+       HIGHLIGHTS (BULLET POINTS)
+       eg: Camera, Processor, Battery
+    ============================ */
+    highlights: {
+      type: [String],
+      default: []
+    },
+
+    /* ============================
+       SPECIFICATIONS (AMAZON STYLE)
+    ============================ */
+    specifications: {
+      display: {
+        type: String,
+        default: ""
+      },
+      processor: {
+        type: String,
+        default: ""
+      },
+      camera: {
+        type: String,
+        default: ""
+      },
+      battery: {
+        type: String,
+        default: ""
+      },
+      charging: {
+        type: String,
+        default: ""
+      },
+      ram: {
+        type: String,
+        default: ""
+      },
+      storage: {
+        type: String,
+        default: ""
+      },
+      os: {
+        type: String,
+        default: ""
+      }
+    },
+
+    /* ============================
+       REVIEWS & RATINGS
+    ============================ */
+    reviews: {
+      type: [reviewSchema],
+      default: []
+    },
+
+    rating: {
+      type: Number,
+      default: 0
+    },
+
+    numReviews: {
+      type: Number,
+      default: 0
     }
   },
   {
@@ -55,7 +159,9 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// ✅ Helpful indexes
+/* ============================
+   INDEXES
+============================ */
 productSchema.index({ slug: 1 });
 productSchema.index({ category: 1 });
 

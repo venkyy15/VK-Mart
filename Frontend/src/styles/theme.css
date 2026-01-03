@@ -1525,3 +1525,92 @@ body {
     font-size: 20px;
   }
 }
+/* ===============================
+   CART BUTTON
+=============================== */
+.cart-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 10px;
+  background: transparent;
+
+  color: #ffffff;
+  cursor: pointer;
+
+  transition: 
+    background-color 0.25s ease,
+    transform 0.15s ease;
+}
+
+/* 🔥 HOVER EFFECT */
+.cart-button:hover {
+  background-color: rgba(10, 252, 54, 0.12);
+  transform: translateY(-1px);
+}
+
+/* 🔥 CLICK / ACTIVE EFFECT */
+.cart-button:active {
+  transform: scale(0.96);
+}
+
+/* ===============================
+   CART ICON
+=============================== */
+.cart-button svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2;
+}
+
+/* ===============================
+   CART COUNT BADGE
+=============================== */
+.cart-count {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 4px;
+  border-radius: 50%;
+
+  background-color: #f8bf6a;   /* Amazon yellow */
+  color: #000;
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🔥 hide badge when cart empty */
+.cart-count:empty,
+.cart-count[data-count="0"] {
+  display: none;
+}
+
+/* ===============================
+   MOBILE TWEAK
+=============================== */
+@media (max-width: 768px) {
+  .cart-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cart-button svg {
+    width: 26px;
+    height: 26px;
+  }
+}

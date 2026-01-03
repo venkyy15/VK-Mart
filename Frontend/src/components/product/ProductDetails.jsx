@@ -27,6 +27,56 @@ export default function ProductDetails({ product }) {
     );
   };
 
+  /* ===============================
+     CATEGORY-WISE SPEC LABELS
+  ================================ */
+  const specLabels = {
+    mobiles: {
+      display: "Display",
+      processor: "Processor",
+      camera: "Camera",
+      battery: "Battery",
+      charging: "Charging",
+      ram: "RAM",
+      storage: "Storage",
+      os: "Operating System"
+    },
+    fashion: {
+      fabric: "Fabric",
+      fit: "Fit",
+      sleeve: "Sleeve",
+      pattern: "Pattern",
+      washCare: "Wash Care"
+    },
+    electronics: {
+      display: "Display",
+      resolution: "Resolution",
+      audio: "Audio",
+      ports: "Ports",
+      smartTv: "Smart TV"
+    },
+    appliances: {
+      power: "Power",
+      jars: "Jars",
+      material: "Material",
+      warranty: "Warranty"
+    },
+    beauty: {
+      skinType: "Skin Type",
+      quantity: "Quantity",
+      formulation: "Formulation",
+      usage: "Usage"
+    },
+    home: {
+      material: "Material",
+      seating: "Seating Capacity",
+      finish: "Finish",
+      shape: "Shape"
+    }
+  };
+
+  const labels = specLabels[product.category] || {};
+
   return (
     <div className="product-details-page">
       {/* ===============================
@@ -104,10 +154,7 @@ export default function ProductDetails({ product }) {
         {activeTab === "description" && (
           <div>
             <h3>Product Description</h3>
-            <p>
-              {product.description ||
-                "No detailed description available."}
-            </p>
+            <p>{product.description}</p>
           </div>
         )}
 
@@ -115,20 +162,15 @@ export default function ProductDetails({ product }) {
         {activeTab === "highlights" && (
           <div>
             <h3>Highlights</h3>
-            <ul className="product-highlights">
-              {(product.highlights && product.highlights.length > 0) ? (
-                product.highlights.map((item, index) => (
+            {product.highlights && product.highlights.length > 0 ? (
+              <ul className="product-highlights">
+                {product.highlights.map((item, index) => (
                   <li key={index}>{item}</li>
-                ))
-              ) : (
-                <>
-                  <li>Premium build quality</li>
-                  <li>High performance processor</li>
-                  <li>Long lasting battery</li>
-                  <li>Excellent camera quality</li>
-                </>
-              )}
-            </ul>
+                ))}
+              </ul>
+            ) : (
+              <p>No highlights available.</p>
+            )}
           </div>
         )}
 
@@ -136,26 +178,24 @@ export default function ProductDetails({ product }) {
         {activeTab === "specs" && (
           <div>
             <h3>Specifications</h3>
-            <table className="product-specs">
-              <tbody>
-                <tr>
-                  <td>Category</td>
-                  <td>{product.category || "—"}</td>
-                </tr>
-                <tr>
-                  <td>Price</td>
-                  <td>₹{formatPrice(product.price)}</td>
-                </tr>
-                <tr>
-                  <td>Stock</td>
-                  <td>{product.stock ?? "Available"}</td>
-                </tr>
-                <tr>
-                  <td>Brand</td>
-                  <td>{product.brand || "VK Mart"}</td>
-                </tr>
-              </tbody>
-            </table>
+
+            {product.specifications &&
+            Object.keys(product.specifications).length > 0 ? (
+              <table className="product-specs">
+                <tbody>
+                  {Object.entries(product.specifications)
+                    .filter(([_, value]) => value)
+                    .map(([key, value]) => (
+                      <tr key={key}>
+                        <td>{labels[key] || key}</td>
+                        <td>{value}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No specifications available.</p>
+            )}
           </div>
         )}
 
@@ -164,7 +204,7 @@ export default function ProductDetails({ product }) {
           <div>
             <h3>Customer Reviews</h3>
 
-            {(product.reviews && product.reviews.length > 0) ? (
+            {product.reviews && product.reviews.length > 0 ? (
               product.reviews.map((review, index) => (
                 <div key={index} className="review-item">
                   <strong>{review.name}</strong>

@@ -634,7 +634,7 @@ html, body, #root {
 }
 
 .product-title {
-  font-size: 28px;
+  font-size: 18px;
   margin-bottom: 10px;
 }
 
@@ -1247,7 +1247,7 @@ html, body, #root {
 }
 
 .logout-text:hover {
-  color: #fff;
+  color: #db0909;
   text-decoration: underline;
 }
 
@@ -1401,7 +1401,7 @@ html, body, #root {
 }
 
 .product-title {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   color: #0b5ed7;
 }
