@@ -44,11 +44,11 @@ export default function Product() {
     );
   }
 
-  // 🔥 IMPORTANT FIX
-  // selected may be { product: {...} }
+  // ✅ handle both API shapes
   const product = selected?.product || selected;
 
   if (!product) return null;
 
+  // 🔥 ALL UI MOVES TO ProductDetails
   return <ProductDetails product={product} />;
 }
