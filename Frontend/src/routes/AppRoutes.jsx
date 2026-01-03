@@ -22,14 +22,14 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/*ROOT – ALWAYS GO TO LOGIN FIRST*/}
+      {/* ROOT */}
       <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* AUTH ROUTES  */}
+      {/* AUTH */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
-      {/*  HOME  */}
+      {/* HOME */}
       <Route
         path="/:userId"
         element={
@@ -49,7 +49,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*PRODUCT*/}
+      {/* PRODUCT */}
       <Route
         path="/:userId/product/:id"
         element={
@@ -59,7 +59,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* CART  */}
+      {/* CART */}
       <Route
         path="/cart/:userId"
         element={
@@ -89,7 +89,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*ORDER SUCCESS */}
+      {/* ORDER SUCCESS */}
       <Route
         path="/order-success/:userId"
         element={
@@ -99,7 +99,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* ORDERS LIST */}
+      {/* ORDERS */}
       <Route
         path="/orders/:userId"
         element={
@@ -109,7 +109,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*  ORDER DETAILS*/}
+      {/* ORDER DETAILS */}
       <Route
         path="/orders/:userId/:orderId"
         element={
@@ -119,7 +119,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*ADDRESSES*/}
+      {/* ADDRESSES */}
       <Route
         path="/addresses/:userId"
         element={
@@ -129,7 +129,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*PROFILE */}
+      {/* PROFILE */}
       <Route
         path="/profile/:userId"
         element={
@@ -139,7 +139,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* LOGIN SECURITY*/}
+      {/* LOGIN SECURITY */}
       <Route
         path="/login-security/:userId"
         element={
@@ -149,7 +149,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/*  FALLBACK */}
+      {/* FALLBACK */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

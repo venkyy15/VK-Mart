@@ -3,12 +3,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchProducts, fetchProductById } from "../../api/productApi";
 
-// ✅ GET PRODUCTS (with search)
+/* ======================================================
+   GET PRODUCTS (with search support)
+====================================================== */
 export const getProducts = createAsyncThunk(
   "products/getAll",
   async (keyword = "", thunkAPI) => {
     try {
-      const res = await fetchProducts(keyword);
+      // ✅ Normalize keyword
+      const search = typeof keyword === "string" ? keyword.trim() : "";
+
+      // ✅ ALWAYS send as query param object
+      const res = await fetchProducts({
+        keyword: search
+      });
+
       return res.data.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -18,7 +27,9 @@ export const getProducts = createAsyncThunk(
   }
 );
 
-// ✅ GET SINGLE PRODUCT
+/* ======================================================
+   GET SINGLE PRODUCT
+====================================================== */
 export const getProductById = createAsyncThunk(
   "products/getById",
   async (id, thunkAPI) => {
@@ -49,7 +60,9 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // all products
+      /* =========================
+         ALL PRODUCTS
+      ========================= */
       .addCase(getProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -63,9 +76,12 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      // single product
+      /* =========================
+         SINGLE PRODUCT
+      ========================= */
       .addCase(getProductById.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(getProductById.fulfilled, (state, action) => {
         state.loading = false;

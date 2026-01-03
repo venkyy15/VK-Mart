@@ -1,54 +1,60 @@
 // src/components/layout/Header.jsx
 
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
+import { logout } from "../../features/auth/authSlice";
+import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
 
 export default function Header() {
   const navigate = useNavigate();
-  const { userId } = useParams(); // 🔥 URL PARAM
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
 
-  // 🔥 Redux state
-  const cartItems = useSelector((state) => state.cart.items);
+  // ✅ GET USER FROM REDUX (CORRECT WAY)
   const user = useSelector((state) => state.auth.user);
+  const userId = user?._id;
 
-  // ✅ SAFE cart count
+  const cartItems = useSelector((state) => state.cart.items);
+
   const cartCount = useMemo(() => {
     if (!Array.isArray(cartItems)) return 0;
     return cartItems.filter((item) => item?.product).length;
   }, [cartItems]);
 
   /* ===============================
-     SEARCH HANDLER
+     SEARCH HANDLER (FIXED)
   ================================ */
   const handleSearch = (e) => {
     e.preventDefault();
 
     if (!search.trim()) return;
 
-    if (userId) {
-      navigate(`/${userId}?keyword=${search.trim()}`);
-    } else {
-      navigate(`/login`);
+    // 🔥 if not logged in, redirect
+    if (!userId) {
+      navigate("/login");
+      return;
     }
 
+    // 🔥 CORRECT NAVIGATION
+    navigate(`/${userId}?keyword=${search.trim()}`);
     setSearch("");
   };
 
   /* ===============================
-     SAFE USER ID
+     LOGOUT
   ================================ */
-  const activeUserId = userId || user?._id;
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   return (
     <header className="header fixed-header">
       {/* LOGO */}
-      <div className="header-left">
-        <Link to="/" className="text-logo">
-          VK MART
-        </Link>
-      </div>
+      <Link to="/" className="header-logo">
+        VK<span>MART</span>
+      </Link>
 
       {/* SEARCH */}
       <form className="header-search" onSubmit={handleSearch}>
@@ -58,49 +64,54 @@ export default function Header() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className="search-btn">
+          <FiSearch />
+        </button>
       </form>
 
-      {/* RIGHT SIDE */}
+      {/* RIGHT */}
       <div className="header-right">
-        {/* ACCOUNT */}
+        {/* PROFILE */}
         <Link
-          to={
-            activeUserId
-              ? `/profile/${activeUserId}`
-              : "/login"
-          }
-          className="header-link"
+          to={userId ? `/profile/${userId}` : "/login"}
+          className="header-item"
         >
-          <span>Hi, {user ? user.name : "Sign in"}</span>
-          <strong>Account</strong>
+          <FiUser className="profile-icon" />
+          <div className="header-text">
+            <span>{user ? user.name : "Sign in"}</span>
+            <strong>Account</strong>
+          </div>
         </Link>
 
-        {/* ORDERS */}
+        {/* RETURNS & ORDERS */}
         <Link
-          to={
-            activeUserId
-              ? `/orders/${activeUserId}`
-              : "/login"
-          }
-          className="header-link"
+          to={userId ? `/orders/${userId}` : "/login"}
+          className="header-item"
         >
-          <span>Returns</span>
-          <strong>& Orders</strong>
+          <div className="header-text">
+            <span>Returns</span>
+            <strong>& Orders</strong>
+          </div>
         </Link>
 
         {/* CART */}
         <Link
-          to={
-            activeUserId
-              ? `/cart/${activeUserId}`
-              : "/login"
-          }
-          className="header-cart"
+          to={userId ? `/cart/${userId}` : "/login"}
+          className="header-item cart-item"
         >
-          Cart ({cartCount})
+          <div className="cart-icon-wrapper">
+            <FiShoppingCart className="cart-icon" />
+            <span className="cart-badge">{cartCount}</span>
+          </div>
         </Link>
+
+        {/* LOGOUT */}
+        {user && (
+          <button className="logout-text" onClick={handleLogout}>
+            Logout
+          </button>
+        )}
       </div>
     </header>
   );
-} 
+}

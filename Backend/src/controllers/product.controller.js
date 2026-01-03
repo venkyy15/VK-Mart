@@ -1,21 +1,30 @@
 import Product from "../models/Product.js";
 import { apiResponse } from "../utils/apiResponse.js";
 
-// @desc    Get all products (WITH SEARCH)
-// @route   GET /api/products
-// @access  Public
+/* ======================================================
+   GET ALL PRODUCTS (WITH SEARCH)
+   GET /api/products?keyword=iphone
+====================================================== */
 export const getAllProducts = async (req, res, next) => {
   try {
-    const keyword = req.query.keyword
-      ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: "i"
-          }
-        }
-      : {};
+    const { keyword } = req.query;
 
-    const products = await Product.find(keyword).sort({
+    let filter = {};
+
+    // ✅ SEARCH SUPPORT (name + category + description)
+    if (keyword && keyword.trim()) {
+      const searchRegex = new RegExp(keyword.trim(), "i");
+
+      filter = {
+        $or: [
+          { name: searchRegex },
+          { category: searchRegex },
+          { description: searchRegex }
+        ]
+      };
+    }
+
+    const products = await Product.find(filter).sort({
       createdAt: -1
     });
 
@@ -25,7 +34,10 @@ export const getAllProducts = async (req, res, next) => {
   }
 };
 
-// @desc    Get product by ID
+/* ======================================================
+   GET PRODUCT BY ID
+   GET /api/products/:id
+====================================================== */
 export const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -41,7 +53,9 @@ export const getProductById = async (req, res, next) => {
   }
 };
 
-// @desc    Create product WITH IMAGE
+/* ======================================================
+   CREATE PRODUCT (WITH IMAGE)
+====================================================== */
 export const createProduct = async (req, res, next) => {
   try {
     const {
@@ -77,7 +91,7 @@ export const createProduct = async (req, res, next) => {
       price,
       description,
       stock,
-      image: req.file.path // 🔥 CLOUDINARY URL
+      image: req.file.path // Cloudinary URL
     });
 
     apiResponse(res, 201, true, "Product created", product);
@@ -86,7 +100,9 @@ export const createProduct = async (req, res, next) => {
   }
 };
 
-// @desc    Update product
+/* ======================================================
+   UPDATE PRODUCT
+====================================================== */
 export const updateProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -105,7 +121,9 @@ export const updateProduct = async (req, res, next) => {
   }
 };
 
-// @desc    Delete product
+/* ======================================================
+   DELETE PRODUCT
+====================================================== */
 export const deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);

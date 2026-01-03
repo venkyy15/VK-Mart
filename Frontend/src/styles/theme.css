@@ -37,43 +37,6 @@ button {
 }
 
 /* ================================
-   HEADER
-================================ */
-.header {
-  background: var(--amazon-dark);
-  color: var(--text-light);
-  padding: 10px;
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--amazon-yellow);
-  /* gold logo */
-}
-
-.header-search input {
-  border: none;
-  padding: 8px;
-}
-
-.header-search button {
-  background: var(--amazon-yellow);
-  padding: 8px 14px;
-  color: var(--amazon-dark);
-  font-weight: 600;
-}
-
-.header-search button:hover {
-  background: var(--amazon-yellow-dark);
-}
-
-.header-link,
-.header-cart {
-  color: var(--text-light);
-}
-
-/* ================================
    FOOTER
 ================================ */
 .footer {
