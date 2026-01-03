@@ -7,14 +7,16 @@ import {
   updateProfileApi
 } from "../../api/authApi";
 
-/* ================= RESTORE USER ================= */
+/* ================= RESTORE FROM STORAGE ================= */
 const userFromStorage = (() => {
   try {
-    return JSON.parse(localStorage.getItem("user")); // ✅ single source of truth
+    return JSON.parse(localStorage.getItem("user"));
   } catch {
     return null;
   }
 })();
+
+const tokenFromStorage = localStorage.getItem("token");
 
 /* ================= LOGIN ================= */
 export const login = createAsyncThunk(
@@ -23,27 +25,24 @@ export const login = createAsyncThunk(
     try {
       const res = await loginUser(formData);
 
-      // ✅ backend returns inside data
-      const userData = res.data.data;
+      // 🔥 backend returns { _id, name, email, token } in data
+      const { token, _id, name, email } = res.data.data;
 
-      const storedUser = {
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email,
-        token: userData.token
-      };
+      if (!token) {
+        throw new Error("Token not received from server");
+      }
 
-      // ✅ persist for refresh + all pages
-      localStorage.setItem(
-        "user",
-        JSON.stringify(storedUser)
-      );
+      const user = { _id, name, email };
 
-      return storedUser;
+      // ✅ persist separately (VERY IMPORTANT)
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { user, token };
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message ||
-          "Invalid email or password"
+        "Invalid email or password"
       );
     }
   }
@@ -59,7 +58,7 @@ export const signup = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message ||
-          "Signup failed"
+        "Signup failed"
       );
     }
   }
@@ -72,26 +71,23 @@ export const updateProfile = createAsyncThunk(
     try {
       const res = await updateProfileApi(formData);
 
-      const userData = res.data.data;
+      // 🔥 backend returns flat object { _id, name, email, token }
+      const { token, _id, name, email } = res.data.data;
 
-      const updatedUser = {
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email,
-        token: userData.token
-      };
+      const user = { _id, name, email };
 
-      // ✅ keep same storage key (VERY IMPORTANT)
-      localStorage.setItem(
-        "user",
-        JSON.stringify(updatedUser)
-      );
+      // 🔥 keep storage in sync
+      localStorage.setItem("user", JSON.stringify(user));
 
-      return updatedUser;
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
+      return { user, token };
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message ||
-          "Profile update failed"
+        "Profile update failed"
       );
     }
   }
@@ -101,7 +97,8 @@ export const updateProfile = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: userFromStorage, 
+    user: userFromStorage,
+    token: tokenFromStorage,
     loading: false,
     error: null,
     signupSuccess: false
@@ -109,11 +106,13 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.token = null;
       state.loading = false;
       state.error = null;
 
-      // ✅ clear persisted auth
+      // ✅ clear everything
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
     clearAuthError: (state) => {
       state.error = null;
@@ -128,7 +127,8 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -156,7 +156,10 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        if (action.payload.token) {
+          state.token = action.payload.token;
+        }
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
@@ -165,9 +168,5 @@ const authSlice = createSlice({
   }
 });
 
-export const {
-  logout,
-  clearAuthError
-} = authSlice.actions;
-
+export const { logout, clearAuthError } = authSlice.actions;
 export default authSlice.reducer;

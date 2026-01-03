@@ -16,7 +16,15 @@ const store = configureStore({
     orders: orderReducer,
     address: addressReducer
   },
+
+  // 🔥 VERY IMPORTANT FIX
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    }),
+
   devTools: true
 });
 
 export default store;
+  

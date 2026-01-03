@@ -3,42 +3,57 @@
 import axiosInstance from "./axiosInstance";
 
 /* =====================================
-   AUTH API
+   AUTH API SERVICES
 ===================================== */
 
 /* ---------- SIGNUP ---------- */
 export const signupUser = async ({ name, email, password }) => {
-  return axiosInstance.post("/auth/signup", {
+  const response = await axiosInstance.post("/auth/signup", {
     name,
     email,
     password
   });
+
+  return response; // authSlice handles response.data
 };
 
 /* ---------- LOGIN ---------- */
 export const loginUser = async ({ email, password }) => {
-  return axiosInstance.post("/auth/login", {
+  const response = await axiosInstance.post("/auth/login", {
     email,
     password
   });
+
+  return response; // IMPORTANT: return full axios response
 };
 
 /* ---------- GET PROFILE ---------- */
 export const getProfile = async () => {
-  return axiosInstance.get("/auth/profile");
+  const response = await axiosInstance.get("/auth/profile");
+  return response;
 };
 
 /* ---------- UPDATE PROFILE ---------- */
 export const updateProfileApi = async ({ name }) => {
-  return axiosInstance.put("/auth/profile", { name });
+  const response = await axiosInstance.put("/auth/profile", {
+    name
+  });
+
+  return response;
 };
 
 /* ---------- CHANGE PASSWORD ---------- */
 export const changePasswordApi = async (data) => {
-  return axiosInstance.put("/auth/change-password", data);
+  const response = await axiosInstance.put(
+    "/auth/change-password",
+    data
+  );
+
+  return response;
 };
 
 /* ---------- ACTIVE SESSIONS ---------- */
 export const getSessionsApi = async () => {
-  return axiosInstance.get("/auth/sessions");
+  const response = await axiosInstance.get("/auth/sessions");
+  return response;
 };

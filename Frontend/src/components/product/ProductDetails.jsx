@@ -10,8 +10,22 @@ export default function ProductDetails({ product }) {
   const { user } = useSelector((state) => state.auth);
 
   const [activeTab, setActiveTab] = useState("description");
+  const [qty, setQty] = useState(1); // ✅ qty state
 
   if (!product) return null;
+
+  /* ================= HANDLERS ================= */
+  const increaseQty = () => {
+    if (qty < (product.stock || 10)) {
+      setQty((prev) => prev + 1);
+    }
+  };
+
+  const decreaseQty = () => {
+    if (qty > 1) {
+      setQty((prev) => prev - 1);
+    }
+  };
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -22,9 +36,25 @@ export default function ProductDetails({ product }) {
     await dispatch(
       addToCartAsync({
         productId: product._id,
-        qty: 1
+        qty // ✅ use selected qty
       })
     );
+  };
+
+  const handleBuyNow = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    await dispatch(
+      addToCartAsync({
+        productId: product._id,
+        qty
+      })
+    );
+
+    navigate(`/cart/${user._id}`);
   };
 
   /* ===============================
@@ -104,12 +134,42 @@ export default function ProductDetails({ product }) {
             {product.description}
           </p>
 
-          <button
-            className="add-to-cart-btn"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </button>
+          <div className="product-actions">
+            {/* QTY CONTROLS */}
+            <div className="qty-control">
+              <button
+                className="qty-btn"
+                onClick={decreaseQty}
+                disabled={qty === 1}
+              >
+                −
+              </button>
+              <span className="qty-value">{qty}</span>
+              <button
+                className="qty-btn"
+                onClick={increaseQty}
+                disabled={qty >= (product.stock || 10)}
+              >
+                +
+              </button>
+            </div>
+
+            <div className="action-buttons">
+              <button
+                className="add-to-cart-btn"
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </button>
+
+              <button
+                className="buy-now-btn"
+                onClick={handleBuyNow}
+              >
+                Buy Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -180,7 +240,7 @@ export default function ProductDetails({ product }) {
             <h3>Specifications</h3>
 
             {product.specifications &&
-            Object.keys(product.specifications).length > 0 ? (
+              Object.keys(product.specifications).length > 0 ? (
               <table className="product-specs">
                 <tbody>
                   {Object.entries(product.specifications)

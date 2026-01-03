@@ -18,10 +18,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  /* 🔥 USER PARAM FROM URL */
   const { userId } = useParams();
-
-  /* 🔥 AUTH USER (SAFETY CHECK) */
   const user = useSelector((state) => state.auth.user);
 
   const cartItems = useSelector((state) =>
@@ -37,6 +34,8 @@ export default function Checkout() {
   );
 
   const [showAddressForm, setShowAddressForm] = useState(false);
+
+  /* 🔥 FORM STATE (UI FRIENDLY) */
   const [newAddress, setNewAddress] = useState({
     name: "",
     phone: "",
@@ -48,7 +47,7 @@ export default function Checkout() {
   });
 
   /* ========================
-     SAFETY: USER MISMATCH
+     USER SAFETY
   ======================== */
   useEffect(() => {
     if (!user) {
@@ -69,12 +68,24 @@ export default function Checkout() {
   }, [dispatch]);
 
   /* ========================
-     ADD ADDRESS
+     SAVE ADDRESS (🔥 FIXED)
   ======================== */
   const handleAddAddress = async (e) => {
     e.preventDefault();
 
-    const res = await dispatch(addAddressAsync(newAddress));
+    // ✅ TRANSFORM UI FIELDS → BACKEND FIELDS
+    const payload = {
+      fullName: newAddress.name,
+      phone: newAddress.phone,
+      addressLine1: newAddress.street,
+      addressLine2: "",
+      city: newAddress.city,
+      state: newAddress.state,
+      pincode: newAddress.pincode,
+      country: newAddress.country
+    };
+
+    const res = await dispatch(addAddressAsync(payload));
 
     if (!res.error) {
       setShowAddressForm(false);
@@ -111,7 +122,7 @@ export default function Checkout() {
     <div className="checkout-page">
       <h2 className="checkout-title">Checkout</h2>
 
-      {/* ================= ADDRESS SECTION ================= */}
+      {/* ================= ADDRESS ================= */}
       <section className="checkout-address">
         <h3>Select Delivery Address</h3>
 

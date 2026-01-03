@@ -13,17 +13,27 @@ const CartItem = memo(function CartItem({ item }) {
 
   const { product, qty } = item;
 
-  const handleQtyChange = useCallback(
-    (e) => {
+  const increaseQty = useCallback(() => {
+    if (qty < (product.stock || 10)) {
       dispatch(
         updateQtyAsync({
           productId: product._id,
-          qty: Number(e.target.value)
+          qty: qty + 1
         })
       );
-    },
-    [dispatch, product._id]
-  );
+    }
+  }, [dispatch, product._id, qty, product.stock]);
+
+  const decreaseQty = useCallback(() => {
+    if (qty > 1) {
+      dispatch(
+        updateQtyAsync({
+          productId: product._id,
+          qty: qty - 1
+        })
+      );
+    }
+  }, [dispatch, product._id, qty]);
 
   const handleRemove = useCallback(() => {
     dispatch(removeFromCartAsync(product._id));
@@ -31,6 +41,7 @@ const CartItem = memo(function CartItem({ item }) {
 
   return (
     <div className="cart-item">
+      {/* IMAGE */}
       <div className="cart-item-image">
         <img
           src={product.image || "/placeholder.png"}
@@ -38,25 +49,38 @@ const CartItem = memo(function CartItem({ item }) {
         />
       </div>
 
+      {/* INFO */}
       <div className="cart-item-info">
-        <h4 className="cart-item-title">{product.name}</h4>
+        <h4 className="cart-item-title">
+          {product.name}
+        </h4>
 
         <p className="cart-item-price">
           ₹{formatPrice(product.price || 0)}
         </p>
 
+        {/* ACTIONS */}
         <div className="cart-actions">
-          <select
-            className="qty-select"
-            value={qty}
-            onChange={handleQtyChange}
-          >
-            {[1, 2, 3, 4, 5].map((q) => (
-              <option key={q} value={q}>
-                Qty: {q}
-              </option>
-            ))}
-          </select>
+          {/* QTY CONTROLS */}
+          <div className="cart-qty-control">
+            <button
+              className="qty-btn"
+              onClick={decreaseQty}
+              disabled={qty === 1}
+            >
+              −
+            </button>
+
+            <span className="qty-value">{qty}</span>
+
+            <button
+              className="qty-btn"
+              onClick={increaseQty}
+              disabled={qty >= (product.stock || 10)}
+            >
+              +
+            </button>
+          </div>
 
           <button className="remove-btn" onClick={handleRemove}>
             Remove

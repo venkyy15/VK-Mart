@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { login } from "../features/auth/authSlice";
 import { fetchCart } from "../features/cart/cartSlice";
-
 import Loader from "../components/common/Loader";
 
 export default function Login() {
@@ -19,36 +18,21 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   /* ===============================
-     HANDLE LOGIN
+     HANDLE LOGIN (NO REDIRECT HERE)
   ================================ */
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const result = await dispatch(
+    dispatch(
       login({
         email: email.trim(),
         password
       })
     );
-
-    /* ✅ LOGIN SUCCESS */
-    if (
-      login.fulfilled.match(result) &&
-      result.payload?._id
-    ) {
-      const userId = result.payload._id;
-
-      // 🔥 Fetch cart AFTER login
-      dispatch(fetchCart());
-
-      // 🔥 Redirect to HOME with userId
-      navigate(`/${userId}`, { replace: true });
-    }
   };
 
   /* ===============================
-     AUTO REDIRECT IF ALREADY LOGGED IN
-     (PAGE REFRESH SAFE)
+     REDIRECT AFTER LOGIN SUCCESS
   ================================ */
   useEffect(() => {
     if (user?._id) {
@@ -89,7 +73,6 @@ export default function Login() {
           required
         />
 
-        {/* PRIMARY BUTTON */}
         <button
           type="submit"
           className="auth-btn"
@@ -98,16 +81,11 @@ export default function Login() {
           {loading ? <Loader /> : "Sign in"}
         </button>
 
-        {/* DIVIDER */}
         <div className="auth-divider">
           <span>New to VK Mart?</span>
         </div>
 
-        {/* SIGNUP LINK */}
-        <Link
-          to="/signup"
-          className="auth-link-btn"
-        >
+        <Link to="/signup" className="auth-link-btn">
           Create your VK Mart account
         </Link>
 
