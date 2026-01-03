@@ -12,6 +12,12 @@ export const getAddressesApi = () => {
   return axiosInstance.get("/address");
 };
 
+/* ================= UPDATE ADDRESS ================= */
+// Backend: PUT /api/address/:id
+export const updateAddressApi = (id, addressData) => {
+  return axiosInstance.put(`/address/${id}`, addressData);
+};
+
 /* ================= DELETE ADDRESS ================= */
 // Backend: DELETE /api/address/:id
 export const deleteAddressApi = (id) => {

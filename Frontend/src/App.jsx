@@ -13,6 +13,14 @@ export default function App() {
 
   // 🔥 Fetch cart on login / refresh
   useEffect(() => {
+    // 🚨 SANITY CHECK: If user exists but no token, force logout
+    const token = localStorage.getItem("token");
+    if (user && !token) {
+      dispatch({ type: "auth/logout" }); // Manual dispatch or import action
+      dispatch(clearCart());
+      return;
+    }
+
     if (user) {
       dispatch(fetchCart());
     } else {

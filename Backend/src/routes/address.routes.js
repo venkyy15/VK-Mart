@@ -4,7 +4,8 @@ import express from "express";
 import {
   addAddress,
   getAddresses,
-  deleteAddress
+  deleteAddress,
+  updateAddress
 } from "../controllers/address.controller.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -18,6 +19,9 @@ router.get("/", protect, getAddresses);
 
 // ✅ SUPPORT OLD FRONTEND CALL (/all)
 router.get("/all", protect, getAddresses);
+
+// Update address by id
+router.put("/:id", protect, updateAddress);
 
 // Delete address by id
 router.delete("/:id", protect, deleteAddress);

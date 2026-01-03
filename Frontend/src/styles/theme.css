@@ -967,41 +967,98 @@ body {
    ADDRESS CARD – RADIO FIX
 ========================= */
 
+/* =========================
+   ADDRESS CARD – RADIO FIX
+========================= */
+
 .address-card {
   position: relative;
-  border: 2px solid #f5c26b;
-  border-radius: 14px;
-  padding: 16px 16px 16px 16px;
+  border: 2px solid #e0e0e0;
+  /* Softer default border */
+  border-radius: 12px;
+  padding: 20px;
   background: #ffffff;
-}
-
-/* RADIO – TOP RIGHT */
-.address-radio {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  transform: scale(1.2);
-  accent-color: #0f3d2e;
+  transition: all 0.2s ease;
+  display: flex !important;
+  /* Force flex */
+  align-items: flex-start;
+  gap: 16px;
   cursor: pointer;
 }
 
+.address-card:hover {
+  border-color: #f7c873;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Hide default radio but keep it accessible/clickable */
+.address-card input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  margin-top: 2px;
+  /* Align with text */
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Checked State Border */
+.address-card input[type="radio"]:checked {
+  border-color: #f0b429;
+  /* Gold border */
+  background-color: #fff;
+}
+
+/* Checked State Dot (Inner Circle) */
+.address-card input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #f0b429;
+  /* Gold dot */
+}
+
+/* Selected Card Styling */
+.address-card:has(input:checked) {
+  border-color: #f0b429;
+  background-color: #fffdf5;
+  /* Light gold tint */
+  box-shadow: 0 0 0 1px #f0b429 inset;
+}
+
+/* Fallback for browsers not supporting :has (e.g. older Firefox) */
+.address-card input:checked~div {
+  /* You can add text styling here if needed */
+}
+
 /* CONTENT */
-.address-content h4 {
+.address-card div {
+  width: 100%;
+}
+
+.address-card strong {
+  display: block;
   font-size: 16px;
   font-weight: 700;
+  color: #111;
   margin-bottom: 4px;
 }
 
-.address-content p {
+.address-card p {
   font-size: 14px;
   margin: 2px 0;
-  color: #333;
-}
-
-/* ACTIVE STATE */
-.address-card.active {
-  border-color: #0f3d2e;
-  box-shadow: 0 0 0 2px rgba(15, 61, 46, 0.15);
+  color: #555;
+  line-height: 1.4;
 }
 
 /* ===============================
@@ -1525,6 +1582,7 @@ body {
     font-size: 20px;
   }
 }
+
 /* ===============================
    CART BUTTON
 =============================== */
@@ -1543,7 +1601,7 @@ body {
   color: #ffffff;
   cursor: pointer;
 
-  transition: 
+  transition:
     background-color 0.25s ease,
     transform 0.15s ease;
 }
@@ -1582,7 +1640,8 @@ body {
   padding: 0 4px;
   border-radius: 50%;
 
-  background-color: #f8bf6a;   /* Amazon yellow */
+  background-color: #f8bf6a;
+  /* Amazon yellow */
   color: #000;
 
   font-size: 12px;
@@ -1614,6 +1673,7 @@ body {
     height: 26px;
   }
 }
+
 .cart-actions {
   display: flex;
   align-items: center;
@@ -1664,7 +1724,236 @@ body {
   transition: all 0.2s ease;
 }
 
+
 .remove-btn:hover {
   background: #f0a500;
   color: #000;
+}
+
+/* =================================
+   PAYMENT PAGE REDESIGN
+================================= */
+
+.payment-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.payment-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  align-items: start;
+}
+
+/* LEFT SECTION */
+.payment-left-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  font-size: 24px;
+  color: #0f3d2e;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* OPTIONS LIST */
+.payment-methods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* CARD ITEM */
+.payment-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.payment-option-card:hover {
+  border-color: #f7c873;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.payment-option-card.selected {
+  border: 2px solid #f7c873;
+  background: #fffdf5;
+}
+
+.payment-radio input {
+  width: 20px;
+  height: 20px;
+  accent-color: #f7c873;
+  cursor: pointer;
+}
+
+.payment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.method-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.method-desc {
+  font-size: 14px;
+  color: #666;
+}
+
+/* DETAILS FORM (UPI/CARD) */
+.payment-details-form {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  background: #fffdf5;
+  border-radius: 0 0 12px 12px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  border-color: #f7c873;
+  box-shadow: 0 0 0 3px rgba(247, 200, 115, 0.2);
+}
+
+/* CARD FORM SPECIFIC */
+.card-form .card-row {
+  display: flex;
+  gap: 16px;
+}
+
+.card-number {
+  letter-spacing: 1px;
+}
+
+/* RIGHT SECTION (STICKY) */
+.payment-right-section {
+  position: sticky;
+  top: 100px;
+}
+
+.order-summary-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.order-summary-card h3 {
+  margin-bottom: 20px;
+  color: #0f3d2e;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #333;
+}
+
+.free-text {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.summary-divider {
+  height: 1px;
+  background: #eee;
+  margin: 16px 0;
+}
+
+.summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 700;
+  color: #b12704;
+  margin-bottom: 24px;
+}
+
+.confirm-order-btn {
+  width: 100%;
+  background: linear-gradient(180deg, #f7d774, #e0b84c);
+  padding: 14px;
+  border: 1px solid #a88734;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.confirm-order-btn:hover {
+  background: linear-gradient(180deg, #f0c14b, #ddb347);
+}
+
+.confirm-order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.security-badges {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  background: #f9f9f9;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 900px) {
+  .payment-grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-right-section {
+    position: static;
+    order: -1;
+    /* Show summary on top for mobile */
+    margin-bottom: 24px;
+  }
 }

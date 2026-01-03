@@ -81,6 +81,16 @@ export const getCart = async (req, res, next) => {
       user: req.user._id
     }).populate("items.product");
 
+    if (cart && cart.items) {
+      // 🔥 CLEANUP: Remove ghost items (deleted products)
+      const validItems = cart.items.filter((item) => item.product);
+
+      if (validItems.length !== cart.items.length) {
+        cart.items = validItems;
+        await cart.save();
+      }
+    }
+
     return apiResponse(
       res,
       200,

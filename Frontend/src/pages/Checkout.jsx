@@ -21,8 +21,10 @@ export default function Checkout() {
   const { userId } = useParams();
   const user = useSelector((state) => state.auth.user);
 
-  const cartItems = useSelector((state) =>
-    state.cart.items.filter((item) => item?.product)
+  /* 🔥 MEMOIZED SELECTOR */
+  const cartItems = useSelector(
+    (state) => state.cart.items.filter((item) => item?.product),
+    (a, b) => JSON.stringify(a) === JSON.stringify(b)
   );
 
   const addresses = useSelector(

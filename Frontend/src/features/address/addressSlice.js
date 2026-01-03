@@ -4,7 +4,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addAddressApi,
   getAddressesApi,
-  deleteAddressApi
+  deleteAddressApi,
+  updateAddressApi
 } from "../../api/addressApi";
 
 /* ================= UTIL: NORMALIZE ADDRESS ================= */
@@ -45,6 +46,21 @@ export const addAddressAsync = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to add address"
+      );
+    }
+  }
+);
+
+/* ================= UPDATE ADDRESS ================= */
+export const updateAddressAsync = createAsyncThunk(
+  "address/updateAddress",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const res = await updateAddressApi(id, data);
+      return normalizeAddress(res.data.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to update address"
       );
     }
   }
@@ -107,6 +123,27 @@ const addressSlice = createSlice({
         state.selected = action.payload; // auto-select
       })
       .addCase(addAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* UPDATE */
+      .addCase(updateAddressAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.list.findIndex(
+          (addr) => addr._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        }
+        if (state.selected?._id === action.payload._id) {
+          state.selected = action.payload;
+        }
+      })
+      .addCase(updateAddressAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

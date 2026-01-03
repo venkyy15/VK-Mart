@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { formatPrice } from "../../utils/formatPrice";
 
 export default function ProductCard({ product }) {
-  const { user } = useSelector((state) => state.auth.user);
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className="product-card">

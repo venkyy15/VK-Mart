@@ -97,7 +97,7 @@ export const updateProfile = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: userFromStorage,
+    user: tokenFromStorage ? userFromStorage : null, // ✅ Fix: Require token
     token: tokenFromStorage,
     loading: false,
     error: null,

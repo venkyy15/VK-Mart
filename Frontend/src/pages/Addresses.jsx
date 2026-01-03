@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAddressesAsync,
   addAddressAsync,
+  updateAddressAsync,
   selectAddress,
   deleteAddressAsync
 } from "../features/address/addressSlice";
@@ -25,6 +26,7 @@ export default function Addresses() {
   );
 
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null); // 🔥 Track editing
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -57,24 +59,69 @@ export default function Addresses() {
     }
   }, [dispatch, user, userId]);
 
-  /* ================= ADD ADDRESS ================= */
+  /* ================= HANDLERS ================= */
+  const handleEdit = (addr) => {
+    setEditingId(addr._id);
+    setForm({
+      fullName: addr.fullName,
+      phone: addr.phone,
+      addressLine1: addr.addressLine1,
+      addressLine2: addr.addressLine2,
+      city: addr.city,
+      state: addr.state,
+      pincode: addr.pincode,
+      country: addr.country
+    });
+    setShowForm(true);
+    // Scroll to form (optional UX)
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setForm({
+      fullName: "",
+      phone: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      pincode: "",
+      country: "India"
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await dispatch(addAddressAsync(form));
+    if (
+      !form.fullName ||
+      !form.phone ||
+      !form.addressLine1 ||
+      !form.city ||
+      !form.pincode
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    let res;
+
+    if (editingId) {
+      // UPDATE
+      res = await dispatch(
+        updateAddressAsync({ id: editingId, data: form })
+      );
+    } else {
+      // CREATE
+      res = await dispatch(addAddressAsync(form));
+    }
 
     if (!res.error) {
-      setShowForm(false);
-      setForm({
-        fullName: "",
-        phone: "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        pincode: "",
-        country: "India"
-      });
+      handleCancel();
+    } else {
+      alert(`Error: ${res.payload || "Something went wrong"}`);
     }
   };
 
@@ -110,7 +157,7 @@ export default function Addresses() {
           className="address-form"
           onSubmit={handleSubmit}
         >
-          <h3>Add New Address</h3>
+          <h3>{editingId ? "Edit Address" : "Add New Address"}</h3>
 
           <div className="address-grid">
             <input
@@ -199,13 +246,13 @@ export default function Addresses() {
 
           <div className="form-actions">
             <button type="submit" className="gold-btn">
-              Save Address
+              {editingId ? "Update Address" : "Save Address"}
             </button>
 
             <button
               type="button"
               className="cancel-btn"
-              onClick={() => setShowForm(false)}
+              onClick={handleCancel}
             >
               Cancel
             </button>
@@ -228,9 +275,8 @@ export default function Addresses() {
           return (
             <div
               key={addr._id}
-              className={`address-card ${
-                isDefault ? "default-address" : ""
-              }`}
+              className={`address-card ${isDefault ? "default-address" : ""
+                }`}
             >
               {isDefault && (
                 <span className="default-badge">
@@ -268,6 +314,13 @@ export default function Addresses() {
                   }
                 >
                   Deliver Here
+                </button>
+
+                <button
+                  className="outline-btn"
+                  onClick={() => handleEdit(addr)}
+                >
+                  Edit
                 </button>
 
                 <button

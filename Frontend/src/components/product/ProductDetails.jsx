@@ -9,23 +9,7 @@ export default function ProductDetails({ product }) {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  const [activeTab, setActiveTab] = useState("description");
-  const [qty, setQty] = useState(1); // ✅ qty state
-
-  if (!product) return null;
-
-  /* ================= HANDLERS ================= */
-  const increaseQty = () => {
-    if (qty < (product.stock || 10)) {
-      setQty((prev) => prev + 1);
-    }
-  };
-
-  const decreaseQty = () => {
-    if (qty > 1) {
-      setQty((prev) => prev - 1);
-    }
-  };
+  const [activeTab, setActiveTab] = useState("description"); // ✅ RESTORED
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -33,12 +17,24 @@ export default function ProductDetails({ product }) {
       return;
     }
 
-    await dispatch(
-      addToCartAsync({
-        productId: product._id,
-        qty // ✅ use selected qty
-      })
-    );
+    try {
+      const res = await dispatch(
+        addToCartAsync({
+          productId: product._id,
+          qty: 1
+        })
+      ).unwrap();
+
+      if (res) {
+        alert("Product added to cart!");
+      }
+    } catch (err) {
+      console.error("Add to cart error:", err);
+      // 🔥 If 401, they might be logged out by interceptor
+      if (!localStorage.getItem("token")) {
+        navigate("/login");
+      }
+    }
   };
 
   const handleBuyNow = async () => {
@@ -47,15 +43,24 @@ export default function ProductDetails({ product }) {
       return;
     }
 
-    await dispatch(
-      addToCartAsync({
-        productId: product._id,
-        qty
-      })
-    );
+    try {
+      await dispatch(
+        addToCartAsync({
+          productId: product._id,
+          qty: 1
+        })
+      ).unwrap();
 
-    navigate(`/cart/${user._id}`);
+      navigate(`/cart/${user._id}`);
+    } catch (err) {
+      console.error("Buy now error:", err);
+      if (!localStorage.getItem("token")) {
+        navigate("/login");
+      }
+    }
   };
+
+
 
   /* ===============================
      CATEGORY-WISE SPEC LABELS
@@ -135,24 +140,7 @@ export default function ProductDetails({ product }) {
           </p>
 
           <div className="product-actions">
-            {/* QTY CONTROLS */}
-            <div className="qty-control">
-              <button
-                className="qty-btn"
-                onClick={decreaseQty}
-                disabled={qty === 1}
-              >
-                −
-              </button>
-              <span className="qty-value">{qty}</span>
-              <button
-                className="qty-btn"
-                onClick={increaseQty}
-                disabled={qty >= (product.stock || 10)}
-              >
-                +
-              </button>
-            </div>
+            {/* NO QTY CONTROL HERE (Moved to Cart) */}
 
             <div className="action-buttons">
               <button

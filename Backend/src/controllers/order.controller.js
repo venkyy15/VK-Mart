@@ -24,29 +24,27 @@ export const placeOrder = async (req, res) => {
     }
 
     let totalAmount = 0;
+    const items = [];
 
-    const items = cart.items.map((cartItem) => {
+    // 🔥 Fix: Filter out ghost items (deleted products)
+    for (const cartItem of cart.items) {
       if (!cartItem.product) {
-        throw new Error("Product not found in cart");
+        continue; // Skip invalid items
       }
 
-      if (cartItem.qty < 1) {
-        throw new Error("Invalid product quantity");
-      }
+      if (cartItem.qty < 1) continue;
 
       const price = cartItem.product.price;
-      if (typeof price !== "number") {
-        throw new Error("Invalid product price");
-      }
+      const qty = cartItem.qty;
 
-      totalAmount += price * cartItem.qty;
+      totalAmount += price * qty;
 
-      return {
+      items.push({
         product: cartItem.product._id,
-        qty: cartItem.qty,
-        price
-      };
-    });
+        qty: qty,
+        price: price
+      });
+    }
 
     if (items.length === 0 || totalAmount <= 0) {
       return res.status(400).json({
