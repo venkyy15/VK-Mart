@@ -4,8 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
 import { logout } from "../../features/auth/authSlice";
-import { FiSearch, FiUser } from "react-icons/fi";
-import { LogOut, ShoppingCart } from "lucide-react";
+import { FiSearch } from "react-icons/fi";
+import {
+  LogOut,
+  ShoppingCart,
+  UserRound,
+  PackageOpen
+} from "lucide-react";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -16,7 +21,6 @@ export default function Header() {
   const userId = user?._id;
 
   const cartItems = useSelector((state) => state.cart.items);
-
   const cartCount = useMemo(() => {
     if (!Array.isArray(cartItems)) return 0;
     return cartItems.filter((item) => item?.product).length;
@@ -25,12 +29,7 @@ export default function Header() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (!search.trim()) return;
-
-    if (!userId) {
-      navigate("/login");
-      return;
-    }
-
+    if (!userId) return navigate("/login");
     navigate(`/${userId}?keyword=${search.trim()}`);
     setSearch("");
   };
@@ -40,11 +39,53 @@ export default function Header() {
     navigate("/login");
   };
 
+  /* ===============================
+     BASE STYLE (UNCHANGED)
+  ================================ */
+  const baseItemStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "6px 10px",
+    borderRadius: "6px",
+    color: "#fff",
+    textDecoration: "none",
+    cursor: "pointer",
+    transition: "all 0.2s ease"
+  };
+
+  /* ===============================
+     HOVER COLORS (ONLY ADDITION)
+  ================================ */
+  const hoverBlue = {
+    onMouseEnter: (e) => (e.currentTarget.style.background = "rgba(3, 49, 125, 0.25)"),
+    onMouseLeave: (e) => (e.currentTarget.style.background = "transparent")
+  };
+
+  const hoverPurple = {
+    onMouseEnter: (e) => (e.currentTarget.style.background = "rgba(132, 0, 255, 0.25)"),
+    onMouseLeave: (e) => (e.currentTarget.style.background = "transparent")
+  };
+
+  const hoverGold = {
+    onMouseEnter: (e) => (e.currentTarget.style.background = "rgba(167, 108, 6, 0.28)"),
+    onMouseLeave: (e) => (e.currentTarget.style.background = "transparent")
+  };
+
+  const hoverRed = {
+    onMouseEnter: (e) => (e.currentTarget.style.background = "rgba(150, 0, 0, 0.28)"),
+    onMouseLeave: (e) => (e.currentTarget.style.background = "transparent")
+  };
+
   return (
     <>
       <header className="header fixed-header">
         {/* LOGO */}
-        <Link to={userId ? `/${userId}` : "/"} className="header-logo">
+        <Link
+          to={userId ? `/${userId}` : "/"}
+          className="header-logo"
+          style={{ cursor: "pointer" }}
+        >
           VK<span>MART</span>
         </Link>
 
@@ -61,51 +102,88 @@ export default function Header() {
           </button>
         </form>
 
+        {/* RIGHT */}
         <div className="header-right">
-          {/* ACCOUNT */}
+          {/* 👤 PROFILE – BLUE */}
           <Link
             to={userId ? `/profile/${userId}` : "/login"}
-            className="header-item"
+            style={baseItemStyle}
+            {...hoverBlue}
           >
-            <FiUser className="profile-icon" />
+            <UserRound size={28} />
             <div className="header-text">
-              {/* 🔥 FIX: NAME MOVED TO strong */}
               <strong>{user ? user.name : "Sign in"}</strong>
-              <span>Account</span>
             </div>
           </Link>
 
-          {/* ORDERS */}
+          {/* 📦 ORDERS – PURPLE */}
           <Link
             to={userId ? `/orders/${userId}` : "/login"}
-            className="header-item"
+            style={baseItemStyle}
+            {...hoverPurple}
           >
+            <PackageOpen size={26} />
             <div className="header-text">
-              {/* 🔥 FIX: FULL TEXT IN strong */}
               <strong>Returns & Orders</strong>
             </div>
           </Link>
 
-          {/* CART */}
+          {/* 🛒 CART – GOLD */}
           <Link
             to={userId ? `/cart/${userId}` : "/login"}
-            className="cart-button"
+            style={{ ...baseItemStyle, position: "relative" }}
+            {...hoverGold}
           >
-            <ShoppingCart size={26} />
-            {cartCount > 0 && (
-              <span className="cart-count">{cartCount}</span>
-            )}
+            <div style={{ position: "relative" }}>
+              <ShoppingCart size={32} />
+              {cartCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-6px",
+                    right: "-10px",
+                    minWidth: "18px",
+                    height: "18px",
+                    background: "#ffb700ff",
+                    color: "#000",
+                    fontSize: "11px",
+                    fontWeight: "700",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  {cartCount}
+                </span>
+              )}
+            </div>
+            <div className="header-text">
+              <strong>Cart</strong>
+            </div>
           </Link>
 
-          {/* LOGOUT */}
+          {/* 🚪 LOGOUT – RED */}
           {user && (
-            <button className="logout-text" onClick={handleLogout}>
-              <LogOut size={22} />
+            <button
+              onClick={handleLogout}
+              style={{
+                ...baseItemStyle,
+                background: "transparent",
+                border: "none"
+              }}
+              {...hoverRed}
+            >
+              <LogOut size={26} />
+              <div className="header-text">
+                <strong>Logout</strong>
+              </div>
             </button>
           )}
         </div>
       </header>
 
+      {/* SPACER */}
       <div className="header-spacer" />
     </>
   );
