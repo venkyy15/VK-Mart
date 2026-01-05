@@ -1035,12 +1035,6 @@ body {
   /* Light gold tint */
   box-shadow: 0 0 0 1px #f0b429 inset;
 }
-
-/* Fallback for browsers not supporting :has (e.g. older Firefox) */
-.address-card input:checked~div {
-  /* You can add text styling here if needed */
-}
-
 /* CONTENT */
 .address-card div {
   width: 100%;
