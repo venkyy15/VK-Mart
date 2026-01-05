@@ -24,17 +24,17 @@ export default function BottomNav() {
   return (
     <nav className="bottom-nav" aria-label="Mobile Navigation">
       <Link to="/" className={isActive("/")}>
-        <House size={20} />
+        <House size={24} />
        
       </Link>
 
       <Link to="/orders" className={isActive("/orders")}>
-        <PackageOpen size={20} />
+        <PackageOpen size={24} />
         
       </Link>
 
       <Link to="/cart" className={isActive("/cart")}>
-        <ShoppingCart size={20} />
+        <ShoppingCart size={24} />
         
         {cartCount > 0 && (
           <span className="cart-badge">{cartCount}</span>
@@ -42,7 +42,7 @@ export default function BottomNav() {
       </Link>
 
       <Link to="/profile" className={isActive("/profile")}>
-        <UserRound size={20} />
+        <UserRound size={24} />
         
       </Link>
     </nav>
