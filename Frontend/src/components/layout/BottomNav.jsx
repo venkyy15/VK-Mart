@@ -2,11 +2,17 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import {
+  House,
+  PackageOpen,
+  ShoppingCart,
+  UserRound,
+} from "lucide-react";
 
 export default function BottomNav() {
   const location = useLocation();
 
-  // ✅ FIXED CART COUNT (SAFE)
+  // ✅ SAFE CART COUNT
   const cartCount = useSelector(
     (state) =>
       state.cart.items?.filter((item) => item?.product)?.length || 0
@@ -18,19 +24,26 @@ export default function BottomNav() {
   return (
     <nav className="bottom-nav" aria-label="Mobile Navigation">
       <Link to="/" className={isActive("/")}>
-        Home
+        <House size={20} />
+       
       </Link>
 
       <Link to="/orders" className={isActive("/orders")}>
-        Orders
+        <PackageOpen size={20} />
+        
       </Link>
 
       <Link to="/cart" className={isActive("/cart")}>
-        Cart ({cartCount})
+        <ShoppingCart size={20} />
+        
+        {cartCount > 0 && (
+          <span className="cart-badge">{cartCount}</span>
+        )}
       </Link>
 
       <Link to="/profile" className={isActive("/profile")}>
-        Profile
+        <UserRound size={20} />
+        
       </Link>
     </nav>
   );
