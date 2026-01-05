@@ -4,16 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
 import { logout } from "../../features/auth/authSlice";
-import { FiSearch, FiUser, FiShoppingCart } from "react-icons/fi";
-import { LogOut , ShoppingCart} from "lucide-react"
-
+import { FiSearch, FiUser } from "react-icons/fi";
+import { LogOut, ShoppingCart } from "lucide-react";
 
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
 
-  // ✅ GET USER FROM REDUX (CORRECT WAY)
   const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
 
@@ -24,93 +22,91 @@ export default function Header() {
     return cartItems.filter((item) => item?.product).length;
   }, [cartItems]);
 
-  /* ===============================
-     SEARCH HANDLER (FIXED)
-  ================================ */
   const handleSearch = (e) => {
     e.preventDefault();
-
     if (!search.trim()) return;
 
-    // 🔥 if not logged in, redirect
     if (!userId) {
       navigate("/login");
       return;
     }
 
-    // 🔥 CORRECT NAVIGATION
     navigate(`/${userId}?keyword=${search.trim()}`);
     setSearch("");
   };
 
-  /* ===============================
-     LOGOUT
-  ================================ */
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
   };
 
   return (
-    <header className="header fixed-header">
-      {/* LOGO */}
-      <Link to="/" className="header-logo">
-        VK<span>MART</span>
-      </Link>
-
-      {/* SEARCH */}
-      <form className="header-search" onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search VK Mart"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button type="submit" className="search-btn">
-          <FiSearch />
-        </button>
-      </form>
-
-      {/* RIGHT */}
-      <div className="header-right">
-        {/* PROFILE */}
-        <Link
-          to={userId ? `/profile/${userId}` : "/login"}
-          className="header-item"
-        >
-          <FiUser className="profile-icon" />
-          <div className="header-text">
-            <span>{user ? user.name : "Sign in"}</span>
-            <strong>Account</strong>
-          </div>
+    <>
+      <header className="header fixed-header">
+        {/* LOGO */}
+        <Link to={userId ? `/${userId}` : "/"} className="header-logo">
+          VK<span>MART</span>
         </Link>
 
-        {/* RETURNS & ORDERS */}
-        <Link
-          to={userId ? `/orders/${userId}` : "/login"}
-          className="header-item"
-        >
-          <div className="header-text">
-            <span>Returns</span>
-            <strong>& Orders</strong>
-          </div>
-        </Link>
-        <Link
-          to={userId ? `/cart/${userId}` : "/login"}
-          className="cart-button"
-        >
-          <ShoppingCart size={28} />
-          <span className="cart-count">{cartCount}</span>
-        </Link>
-
-
-        {/* LOGOUT */}
-        {user && (
-          <button className="logout-text" onClick={handleLogout}>
-            <LogOut />
+        {/* SEARCH */}
+        <form className="header-search" onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Search VK Mart"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button type="submit" className="search-btn">
+            <FiSearch />
           </button>
-        )}
-      </div>
-    </header>
+        </form>
+
+        <div className="header-right">
+          {/* ACCOUNT */}
+          <Link
+            to={userId ? `/profile/${userId}` : "/login"}
+            className="header-item"
+          >
+            <FiUser className="profile-icon" />
+            <div className="header-text">
+              {/* 🔥 FIX: NAME MOVED TO strong */}
+              <strong>{user ? user.name : "Sign in"}</strong>
+              <span>Account</span>
+            </div>
+          </Link>
+
+          {/* ORDERS */}
+          <Link
+            to={userId ? `/orders/${userId}` : "/login"}
+            className="header-item"
+          >
+            <div className="header-text">
+              {/* 🔥 FIX: FULL TEXT IN strong */}
+              <strong>Returns & Orders</strong>
+            </div>
+          </Link>
+
+          {/* CART */}
+          <Link
+            to={userId ? `/cart/${userId}` : "/login"}
+            className="cart-button"
+          >
+            <ShoppingCart size={26} />
+            {cartCount > 0 && (
+              <span className="cart-count">{cartCount}</span>
+            )}
+          </Link>
+
+          {/* LOGOUT */}
+          {user && (
+            <button className="logout-text" onClick={handleLogout}>
+              <LogOut size={22} />
+            </button>
+          )}
+        </div>
+      </header>
+
+      <div className="header-spacer" />
+    </>
   );
 }

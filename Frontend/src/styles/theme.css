@@ -3,9 +3,9 @@
 ================================ */
 :root {
   /* 🟢 Green & Gold Amazon-style Palette */
-  --amazon-dark: #0f3d2e;
+  --amazon-dark: #17e7a5;
   /* deep green */
-  --amazon-light: #145a44;
+  --amazon-light: #17e7a5;
   /* medium green */
   --amazon-yellow: #f5c26b;
   /* gold */
@@ -14,7 +14,7 @@
 
   --bg-main: #f3fff9;
   /* very light green background */
-  --text-dark: #0f3d2e;
+  --text-dark: #25efab;
   --text-light: #ffffff;
   --border-light: #d6efe4;
 }
@@ -125,7 +125,7 @@ button {
 
 .product-title {
   font-size: 14px;
-  color: #0f6db5;
+  color: #e119b2;
 }
 
 .product-price {

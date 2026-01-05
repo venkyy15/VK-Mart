@@ -1,8 +1,10 @@
+// src/components/home/Banner.jsx
+
 import "./Banner.css";
 
 export default function Banner() {
   return (
-    <div className="home-banner-wrapper">
+    <section className="home-banner-section">
       <div className="home-banner">
         <picture>
           {/* Mobile */}
@@ -13,7 +15,7 @@ export default function Banner() {
 
           {/* Tablet */}
           <source
-            media="(max-width: 1023px)"
+            media="(max-width: 1024px)"
             srcSet="https://res.cloudinary.com/dzkphyik7/image/upload/v1767349558/Vk-mart_banner_uzt7h5.png"
           />
 
@@ -21,14 +23,10 @@ export default function Banner() {
           <img
             src="https://res.cloudinary.com/dzkphyik7/image/upload/v1767349558/Vk-mart_banner_uzt7h5.png"
             alt="VK Mart Big Sale"
-            style={{
-              width: "100%",
-              height: "auto",
-              display: "block",
-            }}
+            className="home-banner-image"
           />
         </picture>
       </div>
-    </div>
+    </section>
   );
 }

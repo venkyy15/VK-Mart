@@ -4,6 +4,11 @@
 .home-banner-wrapper {
   width: 100%;
   padding: 0 12px;
+
+  /* 🔥 ADD THIS */
+  margin-top: 20px;      /* space below navbar / category */
+  margin-bottom: 32px;   /* space before products */
+  box-sizing: border-box;
 }
 
 /* =========================
@@ -22,7 +27,7 @@
   width: 100%;
   height: auto;          /* keeps aspect ratio */
   display: block;
-  object-fit: contain;  /* 🔥 prevents crop */
+  object-fit: contain;  /* no crop – same as before */
 }
 
 /* =========================
@@ -42,6 +47,11 @@
    TABLET
 ========================= */
 @media (max-width: 1023px) {
+  .home-banner-wrapper {
+    margin-top: 16px;
+    margin-bottom: 28px;
+  }
+
   .home-banner {
     max-height: 240px;
   }
@@ -55,6 +65,11 @@
    MOBILE
 ========================= */
 @media (max-width: 768px) {
+  .home-banner-wrapper {
+    margin-top: 12px;
+    margin-bottom: 24px;
+  }
+
   .home-banner {
     max-height: 160px;
     border-radius: 10px;
