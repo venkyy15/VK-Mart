@@ -51,8 +51,7 @@ export default function Header() {
   };
 
   /* ===============================
-     🟢 FIXED CATEGORY-STYLE PILL
-     (NO HOVER)
+     PILL STYLE
   ================================ */
   const pillItem = {
     display: "flex",
@@ -60,8 +59,8 @@ export default function Header() {
     gap: "6px",
     padding: "9px 18px",
     borderRadius: "999px",
-    background: "#f5c26b", // GOLD
-    color: "#0f3d2e",      // GREEN
+    background: "#f5c26b",
+    color: "#0f3d2e",
     fontSize: "14px",
     fontWeight: "600",
     textDecoration: "none",
@@ -94,17 +93,26 @@ export default function Header() {
                 width: "100%",
               }}
             >
+              {/* LOGO (slightly center shifted) */}
               <Link
                 to={userId ? `/${userId}` : "/"}
                 className="header-logo"
-                style={{ fontWeight: 700, fontSize: "20px" }}
+                style={{
+                  fontWeight: 700,
+                  fontSize: "20px",
+                  marginLeft: "56px", // ✅ VKMART centre-ku
+                }}
               >
                 VK<span style={{ color: "#f5c26b" }}>MART</span>
               </Link>
 
+              {/* LOGOUT (slightly right shifted) */}
               {user && (
-                <button onClick={handleLogout} style={pillItem}>
-                  <LogOut size={22} />
+                <button
+                  onClick={handleLogout}
+                  style={{ ...pillItem, marginLeft: "12px" }} // ✅ right-side space
+                >
+                  <LogOut size={20} />
                 </button>
               )}
             </div>
@@ -154,7 +162,6 @@ export default function Header() {
               className="header-right"
               style={{ display: "flex", alignItems: "center", gap: "12px" }}
             >
-              {/* PROFILE */}
               <Link
                 to={userId ? `/profile/${userId}` : "/login"}
                 style={pillItem}
@@ -163,7 +170,6 @@ export default function Header() {
                 <span>{user ? user.name : "Venky"}</span>
               </Link>
 
-              {/* ORDERS */}
               <Link
                 to={userId ? `/orders/${userId}` : "/login"}
                 style={pillItem}
@@ -172,7 +178,6 @@ export default function Header() {
                 <span>Returns & Orders</span>
               </Link>
 
-              {/* CART */}
               <Link
                 to={userId ? `/cart/${userId}` : "/login"}
                 style={{ ...pillItem, position: "relative" }}
@@ -202,7 +207,6 @@ export default function Header() {
                 <span>Cart</span>
               </Link>
 
-              {/* LOGOUT */}
               {user && (
                 <button onClick={handleLogout} style={pillItem}>
                   <LogOut size={20} />
