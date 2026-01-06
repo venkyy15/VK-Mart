@@ -51,43 +51,41 @@ export default function Header() {
   };
 
   /* ===============================
-     STYLES
+     🟢 FIXED CATEGORY-STYLE PILL
+     (NO HOVER)
   ================================ */
-  const baseItem = {
+  const pillItem = {
     display: "flex",
     alignItems: "center",
     gap: "6px",
-    padding: "6px 10px",
-    borderRadius: "6px",
-    color: "#fff",
+    padding: "9px 18px",
+    borderRadius: "999px",
+    background: "#f5c26b", // GOLD
+    color: "#0f3d2e",      // GREEN
+    fontSize: "14px",
+    fontWeight: "600",
     textDecoration: "none",
+    border: "1px solid #e6b45e",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
     cursor: "pointer",
-    transition: "all 0.2s ease",
-    background: "transparent",
-    border: "none",
   };
 
-  const hover = (color) => ({
-    onMouseEnter: (e) =>
-      (e.currentTarget.style.background = color),
-    onMouseLeave: (e) =>
-      (e.currentTarget.style.background = "transparent"),
-  });
-
-  /* ===============================
-     HEADER HEIGHT FIX (KEY PART)
-  ================================ */
   const headerHeight = isMobile ? 110 : 70;
 
   return (
     <>
-      <header className="header fixed-header">
+      <header
+        className="header fixed-header"
+        style={{
+          background: "linear-gradient(90deg,#0f3d2e,#145a42)",
+          color: "#ffffff",
+        }}
+      >
         {/* ===============================
-            MOBILE LAYOUT
+            MOBILE
         ================================ */}
         {isMobile ? (
           <>
-            {/* TOP ROW */}
             <div
               style={{
                 display: "flex",
@@ -99,22 +97,18 @@ export default function Header() {
               <Link
                 to={userId ? `/${userId}` : "/"}
                 className="header-logo"
+                style={{ fontWeight: 700, fontSize: "20px" }}
               >
-                VK<span>MART</span>
+                VK<span style={{ color: "#f5c26b" }}>MART</span>
               </Link>
 
               {user && (
-                <button
-                  onClick={handleLogout}
-                  style={baseItem}
-                  {...hover("rgba(150,0,0,0.28)")}
-                >
-                  <LogOut size={26} />
+                <button onClick={handleLogout} style={pillItem}>
+                  <LogOut size={22} />
                 </button>
               )}
             </div>
 
-            {/* SEARCH */}
             <form
               className="header-search"
               onSubmit={handleSearch}
@@ -133,14 +127,15 @@ export default function Header() {
           </>
         ) : (
           /* ===============================
-             DESKTOP LAYOUT
+             DESKTOP
           ================================ */
           <>
             <Link
               to={userId ? `/${userId}` : "/"}
               className="header-logo"
+              style={{ fontWeight: 700, fontSize: "22px" }}
             >
-              VK<span>MART</span>
+              VK<span style={{ color: "#f5c26b" }}>MART</span>
             </Link>
 
             <form className="header-search" onSubmit={handleSearch}>
@@ -157,42 +152,42 @@ export default function Header() {
 
             <div
               className="header-right"
-              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              style={{ display: "flex", alignItems: "center", gap: "12px" }}
             >
+              {/* PROFILE */}
               <Link
                 to={userId ? `/profile/${userId}` : "/login"}
-                style={baseItem}
-                {...hover("rgba(3,49,125,0.25)")}
+                style={pillItem}
               >
-                <UserRound size={26} />
-                <strong>{user ? user.name : "Sign in"}</strong>
+                <UserRound size={22} />
+                <span>{user ? user.name : "Venky"}</span>
               </Link>
 
+              {/* ORDERS */}
               <Link
                 to={userId ? `/orders/${userId}` : "/login"}
-                style={baseItem}
-                {...hover("rgba(132,0,255,0.25)")}
+                style={pillItem}
               >
-                <PackageOpen size={24} />
-                <strong>Returns & Orders</strong>
+                <PackageOpen size={20} />
+                <span>Returns & Orders</span>
               </Link>
 
+              {/* CART */}
               <Link
                 to={userId ? `/cart/${userId}` : "/login"}
-                style={{ ...baseItem, position: "relative" }}
-                {...hover("rgba(167,108,6,0.28)")}
+                style={{ ...pillItem, position: "relative" }}
               >
-                <ShoppingCart size={30} />
+                <ShoppingCart size={24} />
                 {cartCount > 0 && (
                   <span
                     style={{
                       position: "absolute",
                       top: "-6px",
-                      right: "-8px",
+                      right: "-6px",
                       width: "18px",
                       height: "18px",
-                      background: "#ffb700",
-                      color: "#000",
+                      background: "#0f3d2e",
+                      color: "#f5c26b",
                       fontSize: "11px",
                       fontWeight: "700",
                       borderRadius: "50%",
@@ -204,17 +199,14 @@ export default function Header() {
                     {cartCount}
                   </span>
                 )}
-                <strong>Cart</strong>
+                <span>Cart</span>
               </Link>
 
+              {/* LOGOUT */}
               {user && (
-                <button
-                  onClick={handleLogout}
-                  style={baseItem}
-                  {...hover("rgba(150,0,0,0.28)")}
-                >
-                  <LogOut size={24} />
-                  <strong>Logout</strong>
+                <button onClick={handleLogout} style={pillItem}>
+                  <LogOut size={20} />
+                  <span>Logout</span>
                 </button>
               )}
             </div>
@@ -222,7 +214,7 @@ export default function Header() {
         )}
       </header>
 
-      {/* ✅ FIXED SPACER */}
+      {/* SPACER */}
       <div style={{ height: `${headerHeight}px` }} />
     </>
   );

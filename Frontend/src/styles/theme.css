@@ -3,7 +3,7 @@
 ================================ */
 :root {
   /* 🟢 Green & Gold Amazon-style Palette */
-  --amazon-dark: #17e7a5;
+  --amazon-dark: #02f8aa;
   /* deep green */
   --amazon-light: #17e7a5;
   /* medium green */
@@ -14,7 +14,7 @@
 
   --bg-main: #f3fff9;
   /* very light green background */
-  --text-dark: #25efab;
+  --text-dark: #02f8aa;
   --text-light: #ffffff;
   --border-light: #d6efe4;
 }
@@ -100,22 +100,6 @@ button {
   gap: 12px;
   border-radius: 6px;
 }
-
-/* ================================
-   CATEGORY BAR
-================================ */
-.category-bar {
-  background: #ffffff;
-}
-
-.category-item {
-  padding: 8px 12px;
-  border: 1px solid var(--border-light);
-  background: #eafff4;
-  color: var(--amazon-dark);
-  border-radius: 16px;
-}
-
 /* ================================
    PRODUCT
 ================================ */
