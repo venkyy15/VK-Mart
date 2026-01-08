@@ -4,7 +4,7 @@ import "./Banner.css";
 
 export default function Banner() {
   return (
-    <section className="home-banner-section">
+    <section className="home-banner-wrapper">
       <div className="home-banner">
         <picture>
           {/* Mobile */}

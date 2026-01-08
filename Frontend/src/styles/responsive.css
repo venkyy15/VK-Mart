@@ -4,7 +4,7 @@
 }
 
 body {
-  background: #fafafa; 
+  background: #fafafa;
   color: #02442e;
 }
 
@@ -31,8 +31,10 @@ img {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #0f3d2e; /* deep green */
-  color: #f5c26b; /* gold */
+  background: #0f3d2e;
+  /* deep green */
+  color: #f5c26b;
+  /* gold */
   border-bottom: 1px solid #0a2a20;
 }
 
@@ -99,6 +101,7 @@ img {
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
+
 .product-grid {
   margin-top: 16px;
 }
@@ -204,16 +207,59 @@ img {
   }
 
   .bottom-nav {
-    display: flex;
+    display: flex !important;
     position: fixed;
     bottom: 0;
     left: 0;
-    right: 0;
+    width: 100%;
+    height: 64px;
+    /* Fixed height */
     background: #0f3d2e;
+    align-items: center;
     justify-content: space-around;
-    padding: 10px 0;
-    color: #f5c26b;
     border-top: 1px solid #0a2a20;
+    z-index: 2147483647;
+    /* 🔥 Maximum Z-Index */
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Fix for iPhone X+ */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .bottom-nav a {
+    color: #5d8c7a;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    /* 🔥 Huge touch target */
+    height: 100%;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  /* Active State */
+  .bottom-nav a.active {
+    color: #f5c26b;
+    position: relative;
+  }
+
+  /* Active Indicator Dot */
+  .bottom-nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    /* adjustments for height */
+    width: 4px;
+    height: 4px;
+    background: #f5c26b;
+    border-radius: 50%;
+  }
+
+  /* Fix for footer overlap */
+  body {
+    padding-bottom: 70px;
   }
 }
 
@@ -231,7 +277,9 @@ img {
 /* ================================
    APP LAYOUT FIX (FOOTER BOTTOM)
 ================================ */
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
@@ -287,7 +335,7 @@ html, body, #root {
   }
 
   .footer-column {
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 10px;
   }
 
@@ -331,6 +379,7 @@ html, body, #root {
     padding-bottom: 64px;
   }
 }
+
 /* ===== ORDER SUCCESS PAGE ===== */
 .order-success-page {
   min-height: 70vh;
@@ -429,7 +478,8 @@ html, body, #root {
 .footer h2,
 .footer h3,
 .footer h4 {
-  color: #f5c26b; /* gold heading */
+  color: #f5c26b;
+  /* gold heading */
 }
 
 /* Footer content text */
@@ -437,7 +487,8 @@ html, body, #root {
 .footer li,
 .footer span,
 .footer a {
-  color: #e6f2ed; /* soft white */
+  color: #e6f2ed;
+  /* soft white */
 }
 
 /* Footer links */
@@ -447,7 +498,8 @@ html, body, #root {
 }
 
 .footer a:hover {
-  color: #f5c26b; /* Amazon-like hover gold */
+  color: #f5c26b;
+  /* Amazon-like hover gold */
 }
 
 /* Footer column list */
@@ -469,6 +521,7 @@ html, body, #root {
 .footer-top a:hover {
   color: #f5c26b;
 }
+
 /* AMAZON STYLE GOLD BUTTON */
 .start-shopping-btn {
   background: linear-gradient(180deg, #f7d27a 0%, #f0b84b 100%);
@@ -498,6 +551,7 @@ html, body, #root {
     width: 100%;
   }
 }
+
 /*CART ITEM LAYOUT*/
 .cart-item {
   display: flex;
@@ -523,7 +577,8 @@ html, body, #root {
 .cart-item-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;   /* 🔥 no crop, full image */
+  object-fit: contain;
+  /* 🔥 no crop, full image */
 }
 
 /*INFO SECTION*/
@@ -581,6 +636,7 @@ html, body, #root {
     height: 100%;
   }
 }
+
 /* PRODUCT DETAILS PAGE*/
 
 .product-details-page {
@@ -608,7 +664,8 @@ html, body, #root {
 
 .product-image {
   max-width: 100%;
-  max-height: 420px;   /* 🔥 IMAGE SIZE CONTROL */
+  max-height: 420px;
+  /* 🔥 IMAGE SIZE CONTROL */
   object-fit: contain;
 }
 
@@ -645,12 +702,14 @@ html, body, #root {
     max-height: 300px;
   }
 }
+
 /*PRODUCT CARD ALIGNMENT FIX*/
 
 .product-card {
   display: flex;
   flex-direction: column;
-  height: 100%;              /* 🔥 equal height */
+  height: 100%;
+  /* 🔥 equal height */
   padding: 16px;
 }
 
@@ -666,13 +725,16 @@ html, body, #root {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.3;
-  height: 48px;              /* 🔥 SAME HEIGHT */
+  height: 48px;
+  /* 🔥 SAME HEIGHT */
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;     /* 🔥 only 2 lines */
+  -webkit-line-clamp: 2;
+  /* 🔥 only 2 lines */
   -webkit-box-orient: vertical;
   margin-bottom: 8px;
 }
+
 /* PRICE */
 .product-price {
   margin-bottom: 8px;
@@ -687,6 +749,7 @@ html, body, #root {
 .add-to-cart-btn {
   margin-bottom: 8px;
 }
+
 /*PAYMENT PAGE – STYLE*/
 
 .payment-page {
@@ -818,6 +881,7 @@ html, body, #root {
     top: 90px;
   }
 }
+
 /*CHANGE PASSWORD – DESIGN*/
 
 .change-password-card {
@@ -898,6 +962,7 @@ html, body, #root {
     grid-column: span 1;
   }
 }
+
 /* =========================
    HEADER BASE
 ========================= */
@@ -1187,7 +1252,8 @@ html, body, #root {
 
 /* Cart icon — NO background */
 .cart-icon {
-  font-size: 32px;          /* 🔥 big & clean */
+  font-size: 32px;
+  /* 🔥 big & clean */
   color: #fff;
 }
 
@@ -1273,7 +1339,8 @@ html, body, #root {
   }
 
   .header-text span {
-    display: block; /* 🔥 name visible */
+    display: block;
+    /* 🔥 name visible */
     font-size: 11px;
   }
 
@@ -1281,6 +1348,7 @@ html, body, #root {
     font-size: 12px;
   }
 }
+
 /* =========================
    FORCE REMOVE WHITE BOX (FIX)
 ========================= */
@@ -1341,6 +1409,7 @@ html, body, #root {
 .cart-item:hover {
   outline: none !important;
 }
+
 /* ===============================
    PAGE BASE
 =============================== */
@@ -1560,6 +1629,7 @@ html, body, #root {
     max-width: 100%;
   }
 }
+
 /* =========================
    HEADER BASE
 ========================= */
@@ -1569,7 +1639,8 @@ html, body, #root {
   left: 0;
   width: 100%;
   height: 72px;
-  background: #0f3d2e; /* VK MART green */
+  background: #0f3d2e;
+  /* VK MART green */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1707,7 +1778,8 @@ html, body, #root {
   }
 
   .header-spacer {
-    height: 110px; /* space for header + search */
+    height: 110px;
+    /* space for header + search */
   }
 
   .header-logo {
@@ -1732,9 +1804,11 @@ html, body, #root {
   }
 
   .header-item span {
-    display: none; /* hide small text */
+    display: none;
+    /* hide small text */
   }
 }
+
 /* =========================
    MOBILE FIX (IMPORTANT)
 ========================= */
@@ -1744,8 +1818,10 @@ html, body, #root {
     position: fixed;
     top: 0;
     left: 0;
-    height: auto;              /* 🔥 allow grow */
-    padding: 10px 12px 14px;   /* 🔥 extra bottom space */
+    height: auto;
+    /* 🔥 allow grow */
+    padding: 10px 12px 14px;
+    /* 🔥 extra bottom space */
     flex-wrap: wrap;
     row-gap: 10px;
   }
@@ -1769,7 +1845,8 @@ html, body, #root {
 
   /* 🔥 SPACER MUST MATCH HEADER HEIGHT */
   .header-spacer {
-    height: 160px; /* 🔥 THIS FIXES CUT ISSUE */
+    height: 160px;
+    /* 🔥 THIS FIXES CUT ISSUE */
   }
 
   .header-right {

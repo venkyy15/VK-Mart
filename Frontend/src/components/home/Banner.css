@@ -6,8 +6,10 @@
   padding: 0 12px;
 
   /* 🔥 ADD THIS */
-  margin-top: 20px;      /* space below navbar / category */
-  margin-bottom: 32px;   /* space before products */
+  margin-top: 24px;
+  /* space below navbar / category */
+  margin-bottom: 40px;
+  /* space before products */
   box-sizing: border-box;
 }
 
@@ -25,9 +27,11 @@
 ========================= */
 .home-banner img {
   width: 100%;
-  height: auto;          /* keeps aspect ratio */
+  height: auto;
+  /* keeps aspect ratio */
   display: block;
-  object-fit: contain;  /* no crop – same as before */
+  object-fit: contain;
+  /* no crop – same as before */
 }
 
 /* =========================
@@ -48,8 +52,8 @@
 ========================= */
 @media (max-width: 1023px) {
   .home-banner-wrapper {
-    margin-top: 16px;
-    margin-bottom: 28px;
+    margin-top: 20px;
+    margin-bottom: 32px;
   }
 
   .home-banner {
@@ -66,8 +70,8 @@
 ========================= */
 @media (max-width: 768px) {
   .home-banner-wrapper {
-    margin-top: 12px;
-    margin-bottom: 24px;
+    margin-top: 16px;
+    margin-bottom: 28px;
   }
 
   .home-banner {

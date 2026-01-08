@@ -48,7 +48,7 @@ export default function CategoryBar() {
 
   const pillStyle = {
     flexShrink: 0,
-    padding: "9px 18px",
+    padding: "10px 18px",
     borderRadius: "999px",
     background: "#ffffff",
     color: "#0f3d2e",
@@ -67,24 +67,21 @@ export default function CategoryBar() {
           <Link
             key={cat.slug}
             to={`/${userId}/category/${cat.slug}`}
-            style={pillStyle}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#0f3d2e";
-              e.currentTarget.style.color = "#f5c26b";
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow =
-                "0 6px 14px rgba(0,0,0,0.12)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#ffffff";
-              e.currentTarget.style.color = "#0f3d2e";
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 10px rgba(0,0,0,0.05)";
+            style={{
+              background: "#0f3d2e",
+              color: "#f5c26b",
+              padding: "8px 16px",
+              borderRadius: "20px",
+              textDecoration: "none",
+              fontWeight: "500",
+              boxShadow: "0 6px 14px rgba(0,0,0,0.12)",
+              transform: "translateY(-2px)",
+              transition: "all 0.3s ease",
             }}
           >
             {cat.name}
           </Link>
+
         ))}
       </div>
     </nav>
