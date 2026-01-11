@@ -6,10 +6,10 @@ import { useState, useMemo, useEffect } from "react";
 import { logout } from "../../features/auth/authSlice";
 import { FiSearch } from "react-icons/fi";
 import {
-  LogOut,
   ShoppingCart,
   UserRound,
   PackageOpen,
+  LogOut,
 } from "lucide-react";
 
 export default function Header() {
@@ -51,7 +51,7 @@ export default function Header() {
   };
 
   /* ===============================
-     PILL STYLE
+     PILL STYLE (UNCHANGED)
   ================================ */
   const pillItem = {
     display: "flex",
@@ -69,7 +69,7 @@ export default function Header() {
     cursor: "pointer",
   };
 
-  const headerHeight = isMobile ? 110 : 70;
+  const headerHeight = isMobile ? 120 : 70;
 
   return (
     <>
@@ -93,26 +93,37 @@ export default function Header() {
                 width: "100%",
               }}
             >
-              {/* LOGO (slightly center shifted) */}
+              {/* LOGO (ICON + TEXT) */}
               <Link
                 to={userId ? `/${userId}` : "/"}
                 className="header-logo"
                 style={{
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  marginLeft: "56px", // ✅ VKMART centre-ku
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginLeft: "88px",
                 }}
               >
-                VK<span style={{ color: "#f5c26b" }}>MART</span>
+                <img
+                  src="/vk-logo.png"
+                  alt="VK MART"
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    objectFit: "contain",
+                  }}
+                />
+                <span style={{ fontWeight: 800, fontSize: "18px" }}>
+                  VK<span style={{ color: "#f5c26b" }}>MART</span>
+                </span>
               </Link>
 
-              {/* LOGOUT (slightly right shifted) */}
               {user && (
                 <button
                   onClick={handleLogout}
-                  style={{ ...pillItem, marginLeft: "12px" }} // ✅ right-side space
+                  style={{ ...pillItem, padding: "8px 14px" }}
                 >
-                  <LogOut size={20} />
+                  <LogOut size={18} />
                 </button>
               )}
             </div>
@@ -138,14 +149,31 @@ export default function Header() {
              DESKTOP
           ================================ */
           <>
+            {/* LOGO */}
             <Link
               to={userId ? `/${userId}` : "/"}
               className="header-logo"
-              style={{ fontWeight: 700, fontSize: "22px" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                fontWeight: 800,
+                fontSize: "22px",
+              }}
             >
+              <img
+                src="/vk-logo.png"
+                alt="VK MART"
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  objectFit: "contain",
+                }}
+              />
               VK<span style={{ color: "#f5c26b" }}>MART</span>
             </Link>
 
+            {/* SEARCH */}
             <form className="header-search" onSubmit={handleSearch}>
               <input
                 type="text"
@@ -158,6 +186,7 @@ export default function Header() {
               </button>
             </form>
 
+            {/* RIGHT */}
             <div
               className="header-right"
               style={{ display: "flex", alignItems: "center", gap: "12px" }}
@@ -175,7 +204,7 @@ export default function Header() {
                 style={pillItem}
               >
                 <PackageOpen size={20} />
-                <span>Returns & Orders</span>
+                <span>Orders</span>
               </Link>
 
               <Link
