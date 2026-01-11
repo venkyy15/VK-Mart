@@ -24,6 +24,7 @@ export const login = createAsyncThunk(
   async (formData, thunkAPI) => {
     try {
       const res = await loginUser(formData);
+      console.log("👉 LOGIN RESPONSE:", res.data);
 
       // 🔥 backend returns { _id, name, email, token } in data
       const { token, _id, name, email } = res.data.data;
@@ -54,6 +55,7 @@ export const signup = createAsyncThunk(
   async (formData, thunkAPI) => {
     try {
       const res = await signupUser(formData);
+      console.log("👉 SIGNUP RESPONSE:", res.data);
       return res.data.message;
     } catch (err) {
       return thunkAPI.rejectWithValue(

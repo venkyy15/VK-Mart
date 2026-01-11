@@ -10,6 +10,7 @@ import { apiResponse } from "../utils/apiResponse.js";
 export const signup = async (req, res, next) => {
   try {
     let { name, email, password } = req.body;
+    console.log("👉 SIGNUP REQUEST:", { name, email, password });
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -39,6 +40,7 @@ export const signup = async (req, res, next) => {
       token: generateToken(user._id)
     });
   } catch (error) {
+    console.error("❌ SIGNUP ERROR:", error);
     next(error);
   }
 };
@@ -50,6 +52,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     let { email, password } = req.body;
+    console.log("👉 LOGIN REQUEST:", { email, password });
 
     if (!email || !password) {
       return res.status(400).json({
@@ -83,6 +86,7 @@ export const login = async (req, res, next) => {
       token: generateToken(user._id)
     });
   } catch (error) {
+    console.error("❌ LOGIN ERROR:", error);
     next(error);
   }
 };

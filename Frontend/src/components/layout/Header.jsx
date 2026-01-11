@@ -167,7 +167,7 @@ export default function Header() {
                 style={pillItem}
               >
                 <UserRound size={22} />
-                <span>{user ? user.name : "Venky"}</span>
+                <span>{user ? user.name : "User"}</span>
               </Link>
 
               <Link
